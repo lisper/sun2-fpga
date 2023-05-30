@@ -1,0 +1,120 @@
+PAL16R6              u415            PAL DESIGN SPECIFICATIØN
+120 CPU BOARD                        KB 06/12/84
+I/O ACKNOWLEDGE AND TOD RD/WR CONTROL SIGNAL GENERATOR
+SUN MICROSYSTEMS
+
+/CLK100 MA14 MA13 MA12 MA11 /RDIO /WRIO CS7 CS5 GND
+GND /RDRTC /IOACK NC IQ0 IQ1 IQ2 IQ3 /WRRTC VCC
+
+IF (VCC) RDRTC = /MA14 * MA13 * MA12 * MA11 * RDIO * CS7  ;58167 read strobe
+
+IF (VCC) WRRTC = /MA14 * MA13 * MA12 * MA11 * WRIO *      ;58167 write strobe
+                                        CS7 * /IOACK      ;which goes inactive
+                                                          ;when IOACK active
+                 ;RD / WR ACK for the Parallel Port ( 2 wait states )
+         IOACK:= /MA14 * /MA13 * MA12 * MA11 * RDIO * CS5 +
+                 /MA14 * /MA13 * MA12 * MA11 * WRIO * CS5 +
+
+                 ;RD / WR ACK for PROM, SCC, Timer ( 2 wait states )
+                 /MA14 * /MA12 * RDIO * CS5 +
+                 /MA14 * /MA12 * WRIO * CS5 +            
+
+                 ;RD /WR ACK for 58167 when the counter is equal to 10 or 11
+                 ; ( 12 wait states )
+                 /MA14 * MA13 * MA12 * MA11 * RDIO * IQ3 * /IQ2 * IQ1 * CS5 +
+                 /MA14 * MA13 * MA12 * MA11 * WRIO * IQ3 * /IQ2 * IQ1 * CS5
+
+         /IQ0 := /CS5 +                                    ; reset
+                  CS5 *  IQ0 * /IOACK +                    ; toggle
+                  CS5 * /IQ0 *  IOACK                      ; hold at eleven
+
+         /IQ1 := /CS5 +                                    ; reset
+                  CS5 * /IQ1 * /IQ0 +                      ; hold
+                  CS5 *  IQ1 *  IQ0 * /IOACK +             ; toggle
+                  CS5 * /IQ1 *  IOACK                      ; hold at eleven
+
+         /IQ2 := /CS5 +                                    ; reset
+                  CS5 * /IQ2 * /IQ0 +                      ; hold
+                  CS5 * /IQ2 * /IQ1 +                      ; hold
+                  CS5 *  IQ2 *  IQ1 *  IQ0 * /IOACK +      ; toggle
+                  CS5 * /IQ2 *  IOACK                      ; hold at eleven
+
+         /IQ3 := /CS5 +                                    ; reset
+                  CS5 * /IQ3 * /IQ0 +                      ; hold
+                  CS5 * /IQ3 * /IQ1 +                      ; hold
+                  CS5 * /IQ3 * /IQ2 +                      ; hold
+                  CS5 *  IQ3 *  IQ2 * IQ1 * IQ0 * /IOACK + ; toggle
+                  CS5 * /IQ2 *  IOACK                      ; hold at eleven
+
+FUNCTION TABLE
+
+/CLK100 /RDIO /WRIO MA14 MA13 MA12 MA11 CS7 CS5
+/IOACK /RDRTC /WRRTC IQ0 IQ1 IQ2 IQ3
+
+;/  / /                   / / /
+;C  R W  M M M M  C C     I R W  I I I I
+;L  D R  A A A A  S S     O D R  Q Q Q Q
+;K  I I  1 1 1 1  7 5     A R R  3 2 1 0
+;   O O  4 3 2 1          C T T
+;                         K C C
+-------------------------------------------------------------------
+c  x x  x x x x  l l      h h h  l l l l    ; idle state
+c  h h  l l h h  l h      h h h  l l l h    ;setup parallel port rd or wr ioack
+c  l h  l l h h  l h      l h h  l l h l    ;read port
+c  l h  l l h h  l l      h h h  l l l l    ;end read port
+c  h h  l l h h  l h      l h h  l l l h    ;write port
+c  h h  l l h h  l l      h h h  l l l l    ;end write port
+c  h h  l x l x  l h      h h h  l l l h    ;setup prom acc timer ioack
+c  l h  l x l x  l h      l h h  l l h l    ;read prom scc timer
+c  h l  l x h x  l h      l h h  l l h l    ;write prom scc timer
+c  x x  x x x x  l l      h h h  l l l l    ; idle state
+c  l h  l h h h  h h      h l h  l l h l    ;wait 2
+c  l h  l h h h  h h      h l h  l l h h    ;3
+c  l h  l h h h  h h      h l h  l h l l    ;4
+c  l h  l h h h  h h      h l h  l h l h    ;5
+c  l h  l h h h  h h      h l h  l h h l    ;6
+c  l h  l h h h  h h      h l h  l h h h    ;7
+c  l h  l h h h  h h      h l h  h l l l    ;8
+c  l h  l h h h  h h      h l h  h l l h    ;9
+c  l h  l h h h  h h      h l h  h l h l    ;10
+c  l h  l h h h  h h      l l h  h l h h    ;hold 11 ioack
+c  h h  h h h h  h h      h h h  h l h h    ;let counter continue
+c  h h  h h h h  h h      h h h  h h l l    ; to fully test the
+c  h h  h h h h  h h      h h h  h h l h    ; counter
+c  h h  h h h h  h h      h h h  h h h l    ;
+c  h h  h h h h  h h      h h h  h h h h    ;
+c  h h  h h h h  h h      h h h  l l l l    ;
+c  h h  h h h h  h h      h h h  l l l h    ;
+c  h h  h h h h  l l      h h h  l l l l    ;clear counter with cs5
+c  h h  l h h h  l l      h h h  l l l l    ;setup for 58167 operation
+c  h l  l h h h  l h      h h h  l l l h    ;write wait 1
+c  h l  l h h h  h h      h h l  l l h h    ;wait 2
+c  h l  l h h h  h h      h h l  l l h h    ;3
+c  h l  l h h h  h h      h h l  l h l l    ;4
+c  h l  l h h h  h h      h h l  l h l h    ;5
+c  h l  l h h h  h h      h h l  l h h l    ;6
+c  h l  l h h h  h h      h h l  l h h h    ;7
+c  h l  l h h h  h h      h h l  h l l l    ;8
+c  h l  l h h h  h h      h h l  h l l h    ;9
+c  h l  l h h h  h h      h h l  h l h l    ;10
+c  h l  l h h h  h h      l h l  h l h h    ;hold 11 - remove wrrtc
+c  h l  l h h h  l l      h h h  l l l l    ;end operation
+c  x x  x x x x  l l      h h h  l l l l    ; idle
+-------------------------------------------------------------------
+
+
+DESCRIPTION
+IQ0:3 - This is a four bit counter that is enabled when CS5 is active.
+        The counter is used to issue the 58167 IOACK signal on state 11
+	(68010 state S27 and S28) which is used to negate the WRRTC write strobe
+	signal from state 11 on.  The WRRTC signal is negated at this time
+	to allow for data and address hold times.
+
+IOACK - This is the DTACK signal for the 58167, 9513, 8530A, PROM and Parallel
+        Port.  IOACK is issued at S27:28 for the 58167 and at S7:8 for the
+	other devices.  This adds 12 wait-states for the 58167 and two for
+	all others.
+
+WRRTC - 58167 write strobe.  Begins at S7 and ends at S27.
+
+RDRTC - 58167 read strobe.  Begins at S7 and ends at S0 of the next cycle.

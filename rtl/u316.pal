@@ -1,0 +1,74 @@
+PAL16R4
+Rev 1.0             Thu Jun 29 1984                    JM
+U316                Statistic Bit Logic Pal for 120 cpu board
+Sun Microsystems Inc. Mt View CA
+c.s5c type1 type0 mod en read p.fc0 p.fc1 /booten gnd
+/c.s6 c.s5 /p.back acc. mod. type0. type1. acc /dis vcc
+
+/type1. :- /type1                       ; write back
+
+/type0. :- /type0                       ; write back
+
+/acc. := /acc * /en * /dis +            ; keep old acc when not enabled
+        /acc * dis                      ; keep old acc when disabled
+
+/mod. := /mod * read * en * /dis +      ; keep mod value on read cycles
+        /mod * /en * /dis +             ; old value if not enabled
+        /mod * dis                      ; old value if disabled
+
+dis =   p.fc0 * p.fc1 * /p.back +       ; mmu reference
+        p.fc1 * p.back +                ; refresh
+        booten
+
+
+FUNCTION TABLE
+
+c.s5c type1 type0 mod en
+        read p.fc0 p.fc1 /booten /p.back
+                /c.s6 c.s5 acc. mod.
+                        type0. type1. acc /dis
+----------------------------------------------
+LXXXH   XXXLX   HLZZ    ZZXL
+LXXXH   XXXLX   HHZZ    ZZXL
+LXXXH   XXXLX   HLZZ    ZZXL
+LXXXH   XLLHX   HLZZ    ZZXH
+LXXXH   XLLHX   HHZZ    ZZXH
+LXXXH   XHLHX   HLZZ    ZZXH
+LXXXH   XHLHX   HHZZ    ZZXH
+LXXXH   XLHHX   HLZZ    ZZXL
+LXXXH   XLHHX   HHZZ    ZZXL
+LXXXH   XHHHX   HLZZ    ZZXL
+LXXXH   XHHHX   HHZZ    ZZXL
+LXXXH   XHHHX   HLZZ    ZZXL
+LXXXH   XLLHX   HLZZ    ZZXH
+CLLLH   HLLHX   HLZZ    ZZLH
+LLLLH   HLLHX   HHZZ    ZZLH
+LLLLH   HLLHX   LHHL    LLLH
+CLHHH   HLLHX   HLZZ    ZZHH
+LLHHH   HLLHX   HHZZ    ZZHH
+LLHHH   HLLHX   LHHH    HLHH
+CHLLH   LLLHX   HLZZ    ZZHH
+LHLLH   LLLHX   HHZZ    ZZHH
+LHLLH   LLLHX   LHHH    HLHH
+CHHHH   LLLHX   HLZZ    ZZHH
+LHHHH   LLLHX   HHZZ    ZZHH
+LHHHH   LLLHX   LHHH    HHHH
+CLLLL   HLLHX   HLZZ    ZZLH
+LLLLL   HLLHX   HHZZ    ZZLH
+LLLLL   HLLHX   LHLL    LLLH
+CLHHL   LLLHX   HLZZ    ZZHH
+LLHHL   LLLHX   HHZZ    ZZHH
+LLHHL   LLLHX   LHHH    HLHH
+LHLLH   HHHHX   HLZZ    ZZLL
+CHLLH   HHHHX   HLZZ    ZZLL
+LHLLH   HHHHX   HHZZ    ZZLL
+LHLLH   HHHHX   LHLL    LHLL
+LHHHH   LLLHX   HLZZ    ZZHH
+LHHHH   LHHHX   HLZZ    ZZHL
+CHHHH   LHHHX   HLZZ    ZZHL
+LHHHH   LHHHX   HHZZ    ZZHL
+LHHHH   LHHHX   LHHH    HHHL
+LHHHH   LLLHX   HLZZ    ZZHH
+----------------------------------------------
+
+DESCRIPTION

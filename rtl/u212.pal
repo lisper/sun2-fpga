@@ -1,0 +1,73 @@
+PAL20L10
+Rev 1.1         Aug 15 1984             JM
+U212            DVMA Decoder Pal for 120 cpu board
+Sun Microsystems Inc, Mt View CA
+/p1.a18 /p1.a19 /p1.a0 /p1.bhen /p1.mrdc /p1.mrwc
+/proterr en.dvma c.s7 parerr /mrdc gnd
+/iorc /ce.word /ce.byte /p1.xack /p.uds /p.lds
+/p.wr /xen /xreq /aen /pltop vcc
+
+ce.word = aen * p.lds +                 ; CPU CYCLE R/W LOW BYTE/WORD
+          aen * p.wr +                  ; CPU WRITE
+          xen * p.lds                   ; DVMA CYCLE (R/W LOW BYTE/WORD)
+
+
+ce.byte = aen * /p.lds * p.uds * /p.wr +        ; CPU CYCLE (READ UPPER BYTE)
+          xen * /p.lds * p.uds                  ; DVMA CYCLE (R/W UPPER BYTE)
+
+pltop   = /xen * mrdc +                         ; NON_DVMA MRDC CYCLE
+          /xen * iorc +                         ; NON_DVMA IODC CYCLE
+          xen * p.wr                            ; DVMA WRITE CYCLE CONDITION
+
+; ASSERTED ON DVMA CYCLES ONLY
+if ( xen ) p.wr = p1.mrwc * /p1.mrdc * /c.s7 +  ; SET
+                  p.wr * /p1.mrdc               ; HOLD
+
+; ASSERTED ON DVMA CYCLES ONLY
+if ( xen ) p.lds = /p1.a0 * xreq * xen +        ; EVEN BYTE
+                   p1.bhen * xreq * xen +       ; WORD
+                   p.lds * p1.mrwc              ; HOLD
+
+; ASSERTED ON DVMA CYCLES ONLY
+if ( xen ) p.uds = p1.a0 * xreq * xen +         ; ODD BYTE
+                   p1.bhen * xreq * xen +       ; WORD
+                   p.uds * p1.mrwc              ; HOLD
+
+; ASSERTED ON DVMA CYCLES ONLY
+if ( xen ) p1.xack = c.s7 * p1.mrdc * /proterr * /parerr + ; DVMA READ CYCLE
+                     c.s7 * p1.mrwc * /p1.mrdc * /proterr  ; DVMA WRITE CYCLE
+
+xreq     = en.dvma * /p1.a19 * /p1.a18 * p1.mrwc * /aen * /xen +        ; SET
+           xreq * p1.mrwc                                               ; HOLD
+
+FUNCTION TABLE
+/p1.a18 /p1.a19 /p1.a0 /p1.bhen /p1.mrdc /p1.mrwc
+        /proterr en.dvma c.s7 parerr /mrdc /iorc
+                /ce.word /ce.byte /p1.xack /p.uds /p.lds
+                        /p.wr /xen /xreq /aen /pltop
+--------------------------------------------------------------------
+LLXLHH   HLLLLL  HHZZZ   ZHHHL
+LLXLHL   HLLLLL  LHZLL   HHHLL
+HLXLHL   HLLLHL  LHZHL   HHHLL
+HHXLHL   HLLLLH  HLZLH   HHHLL
+HHXLHL   HHLLHH  HHZHH   HHHLH
+HHXLHL   HLLLXX  LHZLL   LHHLX
+HHXLHL   HHLLXX  LHZHL   LHHLX
+HHXLHL   HHLLXX  LHZLH   LHHLX
+HHXLHL   HHLLXX  HHZHH   LHLHX
+HHHLHL   HHLLXX  HHZZZ   ZHLHX
+HHHLHL   HHLLXX  LHHLL   LLLHL
+HHHLHL   HHHLXX  LHLLL   LLLHL
+HHHLHL   HHHLXX  LHLLL   LLLHL
+LLXLHH   HHLLXX  HHHHH   LLHHL
+LLXLHH   HHLLXX  HHZZZ   ZHHHX
+HHLHLL   HHLLXX  HHZZZ   ZHLHX
+HHLHLL   HHLLXX  HLHLH   HLLHH
+HHLHLL   HHLLXX  HLHLH   HLLHH
+HHLHLL   HHHLXX  HLLLH   HLLHH
+HHLHLL   HHHLXX  HLLLH   HLLHH
+LLHHHH   HHLLXX  HHHHH   HLHHH
+LLHHHH   HHLLXX  HHZZZ   ZHHHX
+--------------------------------------------------------------------
+
+DESCRIPTION

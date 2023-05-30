@@ -1,0 +1,76 @@
+PAL16R4             u718                     arb
+Rev 1.2             Jul  6 1984              JM
+120 CPU P1 Bus (Multibus) Arbiter
+Sun Microsystems Inc                  Mt View, CA
+clk /p1bprn /p1init sysb /test vcc vcc vcc vcc gnd 
+/oe /p1breq /p1cbrq /cbrqo q0 q1 /aen /p1busy /p1bpro vcc
+notused notused notused noused
+
+p1bpro   = q1 * q0 * p1bprn * /p1init
+
+if ( aen ) p1busy = aen
+
+if ( cbrqo ) p1cbrq = cbrqo
+
+p1breq = /q1 * /p1init +
+         /q0 * /p1init
+
+cbrqo := q1 * /q0 * p1busy * /p1init +
+         q1 * /q0 * /p1bprn * /p1init +
+         q1 * q0 * sysb * /p1init
+
+aen := /q1 * q0 * /p1init +
+       /q1 * sysb * /p1init +
+       /q0 * /test * sysb * /p1busy * p1bprn * /p1init
+
+/q1 := /q1 * /p1cbrq * p1bprn * /p1init +
+       /q1 * q0 * /p1init +
+       /q1 * sysb * /p1init +
+       q1 * /q0 * /p1busy * p1bprn * /p1init
+
+/q0 := /q1 * /q0 * /p1cbrq * p1bprn * /p1init +
+       q1 * /q0 * p1busy * /p1init +
+       q1 * /q0 * /p1bprn * /p1init +
+       sysb * /p1init
+
+FUNCTION TABLE
+clk /oe /test
+        /p1init /p1bprn sysb
+                /p1cbrq /p1busy
+                        /p1breq /p1bpro
+                                /cbrqo /aen
+                                        q1 q0
+-----------------------------------------------------------
+                                               ;reset
+C L L   L X X  Z Z     H H      H H     H H    ;STATE idle
+L H L   X X X  Z Z     H H      Z Z     Z Z    ; check trustate enable
+L L L   H H L  Z Z     H H      H H     H H    ; check trustate outs
+L L L   H H L  Z Z     H H      H H     H H    ; check bprn-
+L L L   H L L  Z Z     H L      H H     H H    ; check bprn-
+C L L   H H L  Z Z     H H      H H     H H    ; check sysb
+;
+C L L   H H H  L L     L H      L H     H L    ;STATE requestbus
+C L L   H L L  L L     L H      L H     H L    ; busy, not priority
+C L L   H H L  L H     L H      L H     H L    ; not busy, no priority
+;
+C L L   H L H  Z H     L H      H H     L L    ;STATE havebus
+C L L   H L H  L L     L H      H L     L L    ; busy is driven
+C L L   H L L  H L     L H      H H     L L    ; busy is driven
+C L L   H H L  H H     H H      H H     H H    ; check bprn- . sysb
+;
+C L L   H H L  Z Z     H H      H H     H H    ;STATE idle
+C L L   H H H  L L     L H      L H     H L    ;STATE requestbus
+C L L   H L H  Z H     L H      H H     L L    ;STATE havebus
+C L L   H L H  Z L     L H      H L     L L    ; busy is driven
+C L L   H L L  L H     H L      H H     H H    ; check cbrq- . sysb
+;
+C L L   H H L  Z Z     H H      H H     H H    ;STATE idle
+C L L   H H H  L L     L H      L H     H L    ;STATE requestbus
+C L L   H L L  Z H     L H      H H     L H    ;STATE holdbus
+C L L   H L L  Z L     L H      H L     L H    ; busy is driven
+C L L   H L H  Z L     L H      H L     L L    ;STATE havebus
+C L L   H L L  L H     H L      H H     H H    ;STATE idle
+-----------------------------------------------------------
+;c c    i i i  b b     o o      n n     s s
+
+DESCRIPTION

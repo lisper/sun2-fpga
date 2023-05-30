@@ -1,0 +1,18 @@
+
+`include "ttl_74F74.v"
+`include "ttl_74F138.v"
+`include "ttl_74LS148.v"
+`include "ttl_74F151.v"
+`include "ttl_74LS244.v"
+`include "ttl_74F251.v"
+`include "ttl_74F257.v"
+`include "ttl_74LS273.v"
+`include "ttl_74F374.v"
+`include "ttl_74LS393.v"
+`include "ttl_74S491.v"
+`include "ttl_74LS534.v"
+`include "ttl_74LS633.v"
+`include "ttl_74LS640.v"
+`include "ttl_25LS2518.v"
+`include "ttl_58167.v"
+

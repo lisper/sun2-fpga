@@ -1,0 +1,82 @@
+PAL16R4
+Rev 1.1             Wed Aug 15 1984                    JM
+U213                DVMA Controller PAL for 120 cpu board
+Sun Microsystems Inc. Mt View CA
+c100 sysb /ben /sack /sas /p.bg /xreq /rreq /sds gnd
+/oe /p.back /p.br /xberr /xhalt /ren /xen fc1 /p.as vcc
+notused notused notused notused
+
+p.back  = ren +
+          xen
+
+p.br    = xreq * /p.back +
+          rreq * /p.back
+
+if ( p.back ) /fc1 = xen               ; SUPERVISOR DATA FOR XDMA
+
+if ( p.back ) p.as = sack * ren +
+                     sack * xen * xreq
+
+xen     := /xen * /ren * p.bg * /sas * /rreq * sds +     ; SET
+            xen * sds                                    ; CLEAR
+
+ren     := /xen * /ren * p.bg * /sas * rreq +     ; STATE 0
+           ren * /sack +                          ; STATE 1
+           ren * /sas                             ; STATE 2
+
+xberr   := sds * sysb * xhalt +                   ; SET ON MULTIBUS DEADLOCK
+           rreq * /ben * sysb * xhalt +           ; SET ON REFRESH DEADLOCK
+           xberr * sas                            ; HOLD
+
+        ;ASSERT XHALT-
+        ;
+xhalt   := sds * sysb +                           ; SET ON MULTIBUS DEADLOCK
+           rreq * /ben * sysb +                   ; SET ON REFRESH DEADLOCK
+           xberr                                  ; XBERR PLUS ONE STATE
+
+FUNCTION TABLE
+c100
+  sysb /ben /sack /sas
+         /p.bg /xreq /rreq /sds /oe
+                 /p.back /p.br /xberr /xhalt
+                         /ren /xen fc1 /p.as
+----------------------------------------------
+C LHHH  HHHHL   XHHX     XHZZ
+C LHHH  HHHHL   XHHH     XHZZ
+C LHHH  HLLLL   XXHH     XHZZ
+C LHHL  LLLLL   XXHH     XHZZ
+C LHHL  LLLLL   LHHH     LHHH
+C LHHH  LLLLL   LHHH     LHHH
+C LHLH  LLHLL   LHHH     LHHL
+C LHLH  HLHLL   HLHH     HHHH
+C LHLL  HLHLL   HLHH     HHHH
+C LHLH  HLHLL   HLHH     HHZZ
+C LHHH  LLHLL   LHHH     HLLH
+C LHHH  LLHLL   LHHH     HLLH
+C LHLH  HLHLL   LHHH     HLLL
+C LHLL  HLHLL   LHHH     HLLL
+C LHLL  HHHHL   HHHH     HHHH
+C LHLH  HHHHL   HHHH     HHZZ
+C LHHH  HHHHL   HHHH     HHZZ
+C LHHH  HHHLL   HHHH     HHZZ
+C HHHH  HHHLL   HHHL     HHZZ
+C HHHH  HHHLL   HHLL     HHZZ
+C HHHH  HHHLL   HHLL     HHZZ
+C LHHH  HHHLL   HHHL     HHZZ
+C LHHH  HHHLL   HHHH     HHZZ
+C LHHH  HHLHL   HLHH     HHZZ
+C HHHH  HHLHL   HLHL     HHZZ
+C HHHH  HHLHL   HLLL     HHZZ
+C HHHH  HHLHL   HLLL     HHZZ
+C LHHH  HHLHL   HLHL     HHZZ
+C LHHH  HHHHL   HHHH     HHZZ
+C HLHH  HHLHL   HLHH     HHZZ
+C LHHH  HHHHL   HHHH     HHZZ
+C HHHH  HHHHL   HHHH     HHZZ
+C HHHH  HHHLL   HHHL     HHZZ
+C LHHH  HHHHL   HHHH     HHZZ
+C LHHL  HLLLL   HLHH     HHZZ
+C LHHL  LLLLL   HLHH     HHZZ
+----------------------------------------------
+
+DESCRIPTION

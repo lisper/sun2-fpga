@@ -1,0 +1,27 @@
+DISPLAY
+1152x900?
+1024x1024?
+
+implemented as 128K of ram
+0x700000 - 8x77ffff
+
+video ctl
+0x781800 - 0x7818ff
+
+SCC
+
+keyboard
+ map to sun keycodes
+ 0x780000 - 0x7800ff
+
+----
+
+bypass cap issues?
+https://www.aliexpress.us/item/2255799983688709.html
+https://www.aliexpress.us/item/3256805027115946.htm
+
+looks reasonable
+https://numato.com/docs/mimas-artix-7-fpga-development-board-with-ddr-sdram-and-gigabit-ethernet/
+
+good!
+https://www.ztex.de/usb-fpga-2/usb-fpga-2.13.e.html

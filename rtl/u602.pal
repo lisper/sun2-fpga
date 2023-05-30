@@ -1,0 +1,89 @@
+PAL16R8                    u602           dcpctl
+Rev 0.1                    Aug 15 1984    JM
+120 CPU DCP Control pal
+JM Sun Microsystems Inc               Mt View, CA
+clk /sanity vcc vcc /wrdcp /rddcp vcc la1 vcc gnd
+/oe /mas /mds q0 /x400 /x200 /ack q1 q2 vcc
+
+ack := /q2 * q1 * /sanity +
+       q2 * /q1 * q0 * x200 * /sanity +
+       q1 * /q0 * /x200 * /sanity
+
+mds := q2 * /q1 * q0 * x200 * /sanity +
+       q2 * q1 * /q0 * /sanity +
+       q2 * q1 * /x200 * /x400 * /la1 * rddcp * /sanity +
+       q2 * q1 * /x200 * /x400 * /la1 * wrdcp * /sanity +
+
+mas := /q2 * q1 * q0 * /sanity +
+       q1 * q0 * la1 * rddcp * /sanity +
+       q1 * q0 * la1 * wrdcp * /sanity
+
+/q2 := /q2 * q1 * q0 * /sanity +
+       q1 * q0 * la1 * rddcp * /sanity +
+       q1 * q0 * la1 * wrdcp * /sanity
+
+/q1 := q2 * /q1 * q0 * x200 */sanity +
+       q2 * q1 * /q0 * /x200 * /sanity
+
+/q0 := /q2 * q1 * q0 * /sanity +
+       q2 * q1 * /q0 * x200 * /sanity +
+       q1 * q0 * /x200 * /x400 * /la1 * rddcp * /sanity +
+       q1 * q0 * /x200 * /x400 * /la1 * wrdcp * /sanity
+
+x400 := x400 * x200 * /sanity +
+        /x400 * /x200 * /sanity
+
+x200 := /x200 * /sanity
+
+FUNCTION TABLE
+
+clk /oe /sanity
+        /rddcp /wrdcp la1
+	        /x400 /x200
+		        q2 q1 q0
+			        /mas /mds /ack
+
+;c c i  i i i   s s      s s s   o o o
+--------------------------------------------------------------------
+                                        ;reset
+c l l   x x x   h h      h h h   h h h  ;STATE idle
+l h x   x x x   z z      z z z   z z z  ; check tristate enable
+;
+;       MAS- Read Cycle
+;
+c l h   l h h   l l      l h h   l h h  ;STATE strobemas
+c l h   x x x   l h      l h l   l h l  ;STATE mas_dtack
+c l h   x x x   h l      h h h   h h l  ;STATE idle
+c l h   h h x   h h      h h h   h h h  ;STATE idle
+;
+;       MAS- Write Cycle
+;
+c l h   h l h   l l      l h h   l h h  ;STATE strobemas
+c l h   x x x   l h      l h l   l h l  ;STATE mas_dtack
+c l h   x x x   h l      h h h   h h l  ;STATE idle
+c l h   h h x   h h      h h h   h h h  ;STATE idle
+;
+;       MDS- Read Cycle
+;
+c l h   l h l   l l      h h l   h l h  ;STATE strobemds
+c l h   x x x   l h      h h l   h l h  ; state here for 1 more clock
+c l h   x x x   h l      h l h   h l l  ;STATE idle
+c l h   x x x   h h      h l h   h l l  ; state here for 1 more clock
+c l h   h h x   l l      h h h   h h h  ;STATE idle
+;
+;       MDS- Write Cycle
+;
+c l h   x x x   h h      h h h   h h h  ;STATE idle (reset)
+c l h   h l l   l l      h h l   h l h  ;STATE strobemds
+c l h   x x x   l h      h h l   h l h  ; state here for 1 more clock
+c l h   x x x   h l      h l h   h l l  ;STATE mds_dtack
+c l h   x x x   h h      h l h   h l l  ; state here for 1 more clock
+c l h   h h x   l l      h h h   h h h  ;STATE idle
+--------------------------------------------------------------------
+;c c i  i i i   s s      s s s   o o o
+
+;ll  -> lh -> hl -> hh
+
+DESCRIPTION:
+
+
