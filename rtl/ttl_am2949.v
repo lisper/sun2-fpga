@@ -18,6 +18,10 @@ module ttl_am2949( inout A0,
 		   input T_n,
 		   input R_n);
 
+   wire [7:0] a, b;
+   assign a = { A7, A6, A5, A4, A3, A2, A1, A0 };
+   assign b = { B7, B6, B5, B4, B3, B2, B1, B0 };
+   
    assign B0 = ~T_n ? A0 : 1'bz;
    assign B1 = ~T_n ? A1 : 1'bz;
    assign B2 = ~T_n ? A2 : 1'bz;

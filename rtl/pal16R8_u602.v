@@ -23,7 +23,7 @@ module pal16R8_u602 (input D0,
 		     input OE_n);
 
    wire clk, sanity, wrdcp, rddcp, la1;
-   reg ack, mds, mas, q2 = 0, q1 = 0, q0 = 0, x400 = 0, x200 = 0;
+   reg ack, mds = 0, mas = 0, q2 = 0, q1 = 0, q0 = 0, x400 = 0, x200 = 0;
        
    // clk /sanity vcc vcc /wrdcp /rddcp vcc la1 vcc gnd
    assign clk = CLK;
@@ -33,8 +33,8 @@ module pal16R8_u602 (input D0,
    assign la1 = D6;
    
    // /oe /mas /mds q0 /x400 /x200 /ack q1 q2 vcc
-   assign Q7_n = ~mds;
-   assign Q6_n = ~mas;
+   assign Q7_n = ~mas;
+   assign Q6_n = ~mds;
    assign Q5_n = q0;
    assign Q4_n = ~x400;
    assign Q3_n = ~x200;
@@ -58,17 +58,17 @@ module pal16R8_u602 (input D0,
 	       q1 * q0 * la1 * rddcp * ~sanity +
 	       q1 * q0 * la1 * wrdcp * ~sanity;
 	
-	q2 <= ~q2 * q1 * q0 * ~sanity +
-	       q1 * q0 * la1 * rddcp * ~sanity +
-	       q1 * q0 * la1 * wrdcp * ~sanity;
+	q2 <= ~(~q2 * q1 * q0 * ~sanity +
+		q1 * q0 * la1 * rddcp * ~sanity +
+		q1 * q0 * la1 * wrdcp * ~sanity);
 	
-	q1 <= q2 * ~q1 * q0 * x200 *~sanity +
-	       q2 * q1 * ~q0 * ~x200 * ~sanity;
+	q1 <= ~(q2 * ~q1 * q0 * x200 *~sanity +
+		q2 * q1 * ~q0 * ~x200 * ~sanity);
 
-	q0 <= ~q2 * q1 * q0 * ~sanity +
-	       q2 * q1 * ~q0 * x200 * ~sanity +
-	       q1 * q0 * ~x200 * ~x400 * ~la1 * rddcp * ~sanity +
-	       q1 * q0 * ~x200 * ~x400 * ~la1 * wrdcp * ~sanity;
+	q0 <= ~(~q2 * q1 * q0 * ~sanity +
+		q2 * q1 * ~q0 * x200 * ~sanity +
+		q1 * q0 * ~x200 * ~x400 * ~la1 * rddcp * ~sanity +
+		q1 * q0 * ~x200 * ~x400 * ~la1 * wrdcp * ~sanity);
 
 	x400 <= x400 * x200 * ~sanity +
 		~x400 * ~x200 * ~sanity;

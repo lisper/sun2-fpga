@@ -38,7 +38,7 @@ module pal16R4_u415 (input D0,
    // GND /RDRTC /IOACK NC IQ0 IQ1 IQ2 IQ3 /WRRTC VCC
    wire	RDRTC, WRRTC;
    
-   reg IOACK, IQ0, IQ1, IQ2, IQ3;
+   reg IOACK = 0, IQ0 = 0, IQ1 = 0, IQ2 = 0, IQ3 = 0;
    
    assign O1 = ~WRRTC;
    assign O2 = ~RDRTC;

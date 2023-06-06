@@ -34,20 +34,24 @@ module pal16R4_u316 (input D0,
    assign itype0 = D0;
    assign itype1 = D1;
    assign imod = D2;
-   assign en = D3;
-   assign read = D4;
+   assign en = ~D3;
+   assign read = ~D4;
    assign p_fc0 = D5;
    assign p_fc1 = D6;
-   assign booten = D7;
+   assign booten = ~D7;
    
    // /c.s6 c.s5 /p.back acc. mod. type0. type1. acc /dis vcc
-   assign O0 = ~OE_n ? ~dis : 1'bz;
-   assign iacc = Q1;
-   assign Q0 = ~OE_n ? type1 : 1'bz;
-   assign Q1 = ~OE_n ? type0 : 1'bz;
+//   assign O0 = ~OE_n ? ~dis : 1'bz;
+   assign O0 = ~dis;
+   assign iacc = O1;
+//   assign Q0 = ~OE_n ? type1 : 1'bz;
+//   assign Q1 = ~OE_n ? type0 : 1'bz;
+// something seems broken for writing back mod/acc here...
+assign Q0 = 1'bz;
+assign Q1 = 1'bz;
    assign Q2 = ~OE_n ? mod : 1'bz;
    assign Q3 = ~OE_n ? acc : 1'bz;
-   assign p_back = O2;
+   assign p_back = ~O2;
    assign c_s6 = O3;
    
    always @(posedge c_s5c)

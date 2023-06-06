@@ -10,18 +10,18 @@ module m68010_model(
 		    inout  P_RESET_n,
 		    inout  P_HALT_n,
 
-		    output P_AS_n,
-		    output P_RW_n,
-		    output P_UDS_n,
-		    output P_LDS_n,
-		    output P_BG_n,
+		    inout  P_AS_n,
+		    inout  P_RW_n,
+		    inout  P_UDS_n,
+		    inout  P_LDS_n,
+		    inout  P_BG_n,
 
 		    input  IPL2_n,
 		    input  IPL1_n,
 		    input  IPL0_n,
 
 		    output P_FC2,
-		    output P_FC1,
+		    inout  P_FC1,
 		    output P_FC0,
    
 		    inout  P_A1,
@@ -121,17 +121,17 @@ module m68010_model(
 //   assign IPL0_n = ipl[0];
 
    assign P_FC2 = fc[2];
-   assign P_FC1 = fc[1];
+   assign P_FC1 = drive_bus ? fc[1] : 1'bz;
    assign P_FC0 = fc[0];
 
-   reg BGACK;
-   reg RESET;
-   reg HALT;
+   reg BGACK = 0;
+   reg RESET = 0;
+   reg HALT = 0;
 
    assign P_BGACK_n = BGACK;
 
-   assign P_RESET_n = ~RESET;
-   assign P_HALT_n = ~HALT;
+   assign P_RESET_n = drive_bus ? ~RESET : 1'bz;
+   //assign P_HALT_n = drive_bus ? ~HALT : 1'bz;
 
    reg AS;
    reg RW;
@@ -161,7 +161,8 @@ module m68010_model(
 
    task m68k_rw_ram(input [23:0] _addr,
 		    input [2:0] _fc,
-		    input 	read);
+		    input 	read,
+                    input [15:0] w_data);
       begin
 	 $display("m68k_rw_ram(addr=%x, fc=%d)", _addr, _fc);
 	 wait_clock_high;
@@ -180,8 +181,17 @@ module m68010_model(
 	 drive_bus = 1;
 	 wait_clock_low;
 	 // S3
-	 if (~read) drive_data = 1;
-	 else drive_data = 0;
+	 if (read)
+	   begin
+	      drive_data = 0;
+	      RW = 0;
+	   end
+	 else
+	   begin
+	      drive_data = 1;
+	      RW = 1;
+	      data = w_data;
+	   end
 	 drive_addr = 1;
 	 wait_clock_high;
 	 // S4
@@ -189,21 +199,36 @@ module m68010_model(
 	 // S5
 	 wait_clock_high;
 	 // S6
-	 if (P_DTACK_n)
+	 while (P_DTACK_n)
 	   begin
-	      while (P_DTACK_n)
-		begin
-		   wait_clock_low;
-		   wait_clock_high;
-		end
+//	      #1;
+	      wait_clock_high;
+	      wait_clock_low;
 	   end
-	 //
+
+	 wait_clock_low;
+	 wait_clock_high;
+
+	 wait_clock_low;
+	 wait_clock_high;
+
+	 #40;
 	 AS = 0;
 	 UDS = 0;
 	 LDS = 0;
-	 drive_data = 0;
-//	 drive_addr = 0;
-//	 drive_bus = 0;
+
+	 while (~P_DTACK_n)
+	   begin
+//	      #1;
+	      wait_clock_low;
+	      wait_clock_high;
+	   end
+
+	 wait_clock_low;
+	 wait_clock_high;
+
+	 //
+	 #1 drive_data = 0;
 	 $display("m68k_rw_ram(addr=%x, fc=%d) done", _addr, _fc);
       end
    endtask
@@ -226,7 +251,8 @@ module m68010_model(
 	
 	data = 0;
 	addr = 0;
-	drive_data = 1;
-	drive_addr = 1;
+	drive_data = 0;
+	drive_addr = 0;
+	drive_bus = 0;
      end
 endmodule

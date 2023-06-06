@@ -2,183 +2,413 @@ GPLCVER_2.12a of 05/16/07 (Linux-elf).
 Copyright (c) 1991-2007 Pragmatic C Software Corp.
   All Rights reserved.  Licensed under the GNU General Public License (GPL).
   See the 'COPYING' file for details.  NO WARRANTY provided.
-Today is Tue May 30 10:00:08 2023.
+Today is Tue Jun  6 07:37:10 2023.
 Compiling source file "tb_top.v"
-**sun2_ttl.v(352) WARN** [531] u213(pal16R4_u213) explicit connection list fewer ports 16 connected than type's 18
-**sun2_ttl.v(527) WARN** [531] u305(ttl_2168_sram) explicit connection list fewer ports 17 connected than type's 18
-**sun2_ttl.v(25) WARN** [3107] input port P_FC1 (pos. 19) of instance at **top_ttl.v(111) has lowconn driver(s), value of P_FC1 in top may differ from simulators using port collapsing - use +change_port_type for compatibility
-**m68010_model.v(13) WARN** [3108] output port P_AS_n (pos. 9) of instance at **top_ttl.v(179) has highconn driver(s), value of P_AS_n in m68010_model may differ from simulators using port collapsing - use +change_port_type for compatibility
-**m68010_model.v(14) WARN** [3108] output port P_RW_n (pos. 10) of instance at **top_ttl.v(179) has highconn driver(s), value of P_RW_n in m68010_model may differ from simulators using port collapsing - use +change_port_type for compatibility
-**m68010_model.v(15) WARN** [3108] output port P_UDS_n (pos. 11) of instance at **top_ttl.v(179) has highconn driver(s), value of P_UDS_n in m68010_model may differ from simulators using port collapsing - use +change_port_type for compatibility
-**m68010_model.v(16) WARN** [3108] output port P_LDS_n (pos. 12) of instance at **top_ttl.v(179) has highconn driver(s), value of P_LDS_n in m68010_model may differ from simulators using port collapsing - use +change_port_type for compatibility
-**m68010_model.v(17) WARN** [3108] output port P_BG_n (pos. 13) of instance at **top_ttl.v(179) has highconn driver(s), value of P_BG_n in m68010_model may differ from simulators using port collapsing - use +change_port_type for compatibility
+**sun2_ttl.v(360) WARN** [531] u213(pal16R4_u213) explicit connection list fewer ports 16 connected than type's 18
 Highest level modules:
+ttl_74F74_d
 ttl_74LS640
 ttl_58167
 tb
 
-bootrom_h: 0000 -> 00
+bootrom_h: 7fff -> xx
+bootrom_l: 7fff -> xx
+ram u30a [00f] -> 0;     0ns
+ram u309 [00f] -> 0;     0ns
+ram u308 [00f] -> 0;     0ns
+ram u307 [00f] -> 0;     0ns
+ram u306 [00f] -> 0;     0ns
+ram u305 [00f] -> 0;     0ns
+ram u304 [ff8] -> 0;     0ns
+ram u303 [ff8] -> 0;     0ns
+74f251; sel 000, mux 0, ABC 000 D x00
+ram u303 [fff] -> 0;     0ns
+ram u304 [fff] -> 0;     0ns
+74f251; sel 000, mux 0, ABC 000 D 000
+SETUP_PMAP
+m68k_rw_ram(addr=000000, fc=3)
+ram u305 [000] <- 7;   301ns
+ram u306 [000] <- 3;   301ns
+ram u307 [000] <- 0;   301ns
+ram u308 [000] -> 0;   301ns
+ram u309 [000] -> 0;   301ns
+ram u30a [000] -> 0;   301ns
 bootrom_l: 0000 -> 00
-ram[xx0] -> x;     0ns
-ram[xx0] -> x;     0ns
-ram[xx0] -> x;     0ns
-ram[xx0] <- Z;     0ns
-ram[xx0] -> x;     0ns
-ram[xx0] -> x;     0ns
-74f251; sel 000, mux 0, ABC 000 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 001, mux 0, ABC 001 D 00
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=000000, fc=6)
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-m68k_rw_ram(addr=000000, fc=6) done
-m68k_rw_ram(addr=000002, fc=6)
-bootrom_l: 0001 -> 10
-bootrom_h: 0001 -> 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=000002, fc=6) done
-m68k_rw_ram(addr=000004, fc=6)
-bootrom_l: 0002 -> 00
-bootrom_h: 0002 -> ef
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=000004, fc=6) done
-m68k_rw_ram(addr=000006, fc=6)
+bootrom_h: 0000 -> 00
+ram u303 [007] -> 0;   301ns
+ram u304 [007] -> 0;   301ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [000] -> 0;   621ns
+ram u305 [000] -> 7;   621ns
+ram u306 [000] -> 3;   621ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=000000, fc=3) done
+m68k_rw_ram(addr=000006, fc=3)
 bootrom_l: 0003 -> 00
 bootrom_h: 0003 -> d0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=000006, fc=6) done
-m68k_rw_ram(addr=000008, fc=6)
-bootrom_l: 0004 -> 00
-bootrom_h: 0004 -> ef
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=000008, fc=6) done
-m68k_rw_ram(addr=00000a, fc=6)
-bootrom_l: 0005 -> 6b
-bootrom_h: 0005 -> 8c
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=00000a, fc=6) done
-m68k_rw_ram(addr=00000c, fc=6)
-bootrom_l: 0006 -> 00
-bootrom_h: 0006 -> ef
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=00000c, fc=6) done
-m68k_rw_ram(addr=00000f, fc=6)
-bootrom_l: 0007 -> 00
-bootrom_h: 0007 -> c8
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 1, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-74f251; sel 111, mux 0, ABC 111 D 00
-m68k_rw_ram(addr=00000f, fc=6) done
-74f251; sel 110, mux 0, ABC 110 D 00
-u718: aen=1 cbrqo=0; q 11, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 1 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-u718: aen=0 cbrqo=0; q 00, p1init 0, sysb 0, test 0, p1cbrq 0 p1busy 0 p1bprn 0
-Halted at location **tb_top.v(30) time 7101 from call to $finish.
-  There were 0 error(s), 8 warning(s), and 1249 inform(s).
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u303 [000] -> 0;  1181ns
+ram u304 [000] -> 0;  1181ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=000006, fc=3) done
+m68k_rw_ram(addr=000004, fc=3)
+bootrom_l: 0002 -> 00
+bootrom_h: 0002 -> ef
+ram u305 [000] -> 7;  1381ns
+ram u306 [000] -> 3;  1381ns
+ram u307 [000] -> 0;  1381ns
+ram u308 [000] -> 0;  1381ns
+ram u309 [000] -> 0;  1381ns
+ram u30a [000] -> 0;  1381ns
+ram u303 [000] -> 0;  1381ns
+ram u304 [000] -> 0;  1381ns
+ram u303 [000] <- 0;  1421ns
+ram u304 [000] <- 0;  1421ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u303 [000] -> 0;  1741ns
+ram u304 [000] -> 0;  1741ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=000004, fc=3) done
+m68k_rw_ram(addr=000000, fc=3)
+bootrom_l: 0000 -> 00
+bootrom_h: 0000 -> 00
+ram u307 [000] -> 0;  1941ns
+ram u305 [000] -> 7;  1941ns
+ram u306 [000] -> 3;  1941ns
+ram u307 [000] <- 0;  1981ns
+ram u305 [000] <- 1;  1981ns
+ram u306 [000] <- 0;  1981ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [000] -> 0;  2301ns
+ram u305 [000] -> 1;  2301ns
+ram u306 [000] -> 0;  2301ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=000000, fc=3) done
+SETUP_PMAP2
+m68k_rw_ram(addr=001000, fc=3)
+ram u305 [002] -> 0;  2422ns
+ram u306 [002] -> 0;  2422ns
+ram u307 [002] -> 0;  2422ns
+ram u308 [002] -> 0;  2422ns
+ram u309 [002] -> 0;  2422ns
+ram u30a [002] -> 0;  2422ns
+bootrom_l: 0800 -> 58
+bootrom_h: 0800 -> 4f
+ram u307 [002] -> 0;  2501ns
+ram u305 [002] -> 0;  2501ns
+ram u306 [002] -> 0;  2501ns
+ram u307 [002] <- a;  2541ns
+ram u305 [002] <- 1;  2541ns
+ram u306 [002] <- 0;  2541ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [002] -> a;  2861ns
+ram u305 [002] -> 1;  2861ns
+ram u306 [002] -> 0;  2861ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=001000, fc=3) done
+m68k_rw_ram(addr=001002, fc=3)
+bootrom_l: 0801 -> 4a
+bootrom_h: 0801 -> b8
+ram u308 [002] -> 0;  3061ns
+ram u309 [002] -> 0;  3061ns
+ram u30a [002] -> 0;  3061ns
+ram u308 [002] <- 0;  3101ns
+ram u309 [002] <- 0;  3101ns
+ram u30a [002] <- 4;  3101ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [002] -> 0;  3421ns
+ram u309 [002] -> 0;  3421ns
+ram u30a [002] -> 4;  3421ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=001002, fc=3) done
+m68k_rw_ram(addr=001800, fc=3)
+ram u305 [003] -> 0;  3542ns
+ram u306 [003] -> 0;  3542ns
+ram u307 [003] -> 0;  3542ns
+ram u308 [003] -> 0;  3542ns
+ram u309 [003] -> 0;  3542ns
+ram u30a [003] -> 0;  3542ns
+bootrom_l: 0c00 -> 61
+bootrom_h: 0c00 -> 00
+ram u307 [003] -> 0;  3621ns
+ram u305 [003] -> 0;  3621ns
+ram u306 [003] -> 0;  3621ns
+ram u307 [003] <- a;  3661ns
+ram u305 [003] <- 1;  3661ns
+ram u306 [003] <- 0;  3661ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [003] -> a;  3981ns
+ram u305 [003] -> 1;  3981ns
+ram u306 [003] -> 0;  3981ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=001800, fc=3) done
+m68k_rw_ram(addr=001802, fc=3)
+bootrom_l: 0c01 -> fa
+bootrom_h: 0c01 -> 02
+ram u308 [003] -> 0;  4181ns
+ram u309 [003] -> 0;  4181ns
+ram u30a [003] -> 0;  4181ns
+ram u308 [003] <- 0;  4221ns
+ram u309 [003] <- 0;  4221ns
+ram u30a [003] <- c;  4221ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [003] -> 0;  4541ns
+ram u309 [003] -> 0;  4541ns
+ram u30a [003] -> c;  4541ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=001802, fc=3) done
+m68k_rw_ram(addr=002000, fc=3)
+ram u305 [004] -> 0;  4662ns
+ram u306 [004] -> 0;  4662ns
+ram u307 [004] -> 0;  4662ns
+ram u308 [004] -> 0;  4662ns
+ram u309 [004] -> 0;  4662ns
+ram u30a [004] -> 0;  4662ns
+bootrom_l: 1000 -> 4e
+bootrom_h: 1000 -> 75
+ram u307 [004] -> 0;  4741ns
+ram u305 [004] -> 0;  4741ns
+ram u306 [004] -> 0;  4741ns
+ram u307 [004] <- a;  4781ns
+ram u305 [004] <- 1;  4781ns
+ram u306 [004] <- 0;  4781ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [004] -> a;  5101ns
+ram u305 [004] -> 1;  5101ns
+ram u306 [004] -> 0;  5101ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=002000, fc=3) done
+m68k_rw_ram(addr=002002, fc=3)
+bootrom_l: 1001 -> 00
+bootrom_h: 1001 -> 00
+ram u308 [004] -> 0;  5301ns
+ram u309 [004] -> 0;  5301ns
+ram u30a [004] -> 0;  5301ns
+ram u308 [004] <- 0;  5341ns
+ram u309 [004] <- 0;  5341ns
+ram u30a [004] <- 2;  5341ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [004] -> 0;  5661ns
+ram u309 [004] -> 0;  5661ns
+ram u30a [004] -> 2;  5661ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=002002, fc=3) done
+m68k_rw_ram(addr=002800, fc=3)
+ram u305 [005] -> 0;  5782ns
+ram u306 [005] -> 0;  5782ns
+ram u307 [005] -> 0;  5782ns
+ram u308 [005] -> 0;  5782ns
+ram u309 [005] -> 0;  5782ns
+ram u30a [005] -> 0;  5782ns
+bootrom_l: 1400 -> 42
+bootrom_h: 1400 -> 10
+ram u307 [005] -> 0;  5861ns
+ram u305 [005] -> 0;  5861ns
+ram u306 [005] -> 0;  5861ns
+ram u307 [005] <- a;  5901ns
+ram u305 [005] <- 1;  5901ns
+ram u306 [005] <- 0;  5901ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [005] -> a;  6221ns
+ram u305 [005] -> 1;  6221ns
+ram u306 [005] -> 0;  6221ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=002800, fc=3) done
+m68k_rw_ram(addr=002802, fc=3)
+bootrom_l: 1401 -> 2a
+bootrom_h: 1401 -> 7c
+ram u308 [005] -> 0;  6421ns
+ram u309 [005] -> 0;  6421ns
+ram u30a [005] -> 0;  6421ns
+ram u308 [005] <- 0;  6461ns
+ram u309 [005] <- 0;  6461ns
+ram u30a [005] <- a;  6461ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [005] -> 0;  6781ns
+ram u309 [005] -> 0;  6781ns
+ram u30a [005] -> a;  6781ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=002802, fc=3) done
+m68k_rw_ram(addr=003000, fc=3)
+ram u305 [006] -> 0;  6902ns
+ram u306 [006] -> 0;  6902ns
+ram u307 [006] -> 0;  6902ns
+ram u308 [006] -> 0;  6902ns
+ram u309 [006] -> 0;  6902ns
+ram u30a [006] -> 0;  6902ns
+bootrom_l: 1800 -> 00
+bootrom_h: 1800 -> 00
+ram u307 [006] -> 0;  6981ns
+ram u305 [006] -> 0;  6981ns
+ram u306 [006] -> 0;  6981ns
+ram u307 [006] <- a;  7021ns
+ram u305 [006] <- 1;  7021ns
+ram u306 [006] <- 0;  7021ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [006] -> a;  7341ns
+ram u305 [006] -> 1;  7341ns
+ram u306 [006] -> 0;  7341ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=003000, fc=3) done
+m68k_rw_ram(addr=003002, fc=3)
+bootrom_l: 1801 -> 00
+bootrom_h: 1801 -> f0
+ram u308 [006] -> 0;  7541ns
+ram u309 [006] -> 0;  7541ns
+ram u30a [006] -> 0;  7541ns
+ram u308 [006] <- 0;  7581ns
+ram u309 [006] <- 0;  7581ns
+ram u30a [006] <- 2;  7581ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [006] -> 0;  7901ns
+ram u309 [006] -> 0;  7901ns
+ram u30a [006] -> 2;  7901ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=003002, fc=3) done
+m68k_rw_ram(addr=003800, fc=3)
+ram u305 [007] -> 0;  8022ns
+ram u306 [007] -> 0;  8022ns
+ram u307 [007] -> 0;  8022ns
+ram u308 [007] -> 0;  8022ns
+ram u309 [007] -> 0;  8022ns
+ram u30a [007] -> 0;  8022ns
+bootrom_l: 1c00 -> 21
+bootrom_h: 1c00 -> c0
+ram u307 [007] -> 0;  8101ns
+ram u305 [007] -> 0;  8101ns
+ram u306 [007] -> 0;  8101ns
+ram u307 [007] <- a;  8141ns
+ram u305 [007] <- 1;  8141ns
+ram u306 [007] <- 0;  8141ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u307 [007] -> a;  8461ns
+ram u305 [007] -> 1;  8461ns
+ram u306 [007] -> 0;  8461ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=003800, fc=3) done
+m68k_rw_ram(addr=003802, fc=3)
+bootrom_l: 1c01 -> 06
+bootrom_h: 1c01 -> 50
+ram u308 [007] -> 0;  8661ns
+ram u309 [007] -> 0;  8661ns
+ram u30a [007] -> 0;  8661ns
+ram u308 [007] <- 0;  8701ns
+ram u309 [007] <- 0;  8701ns
+ram u30a [007] <- 0;  8701ns
+74f251; sel 000, mux 1, ABC 000 D 000
+ram u308 [007] -> 0;  9021ns
+ram u309 [007] -> 0;  9021ns
+ram u30a [007] -> 0;  9021ns
+74f251; sel 000, mux 0, ABC 000 D 000
+m68k_rw_ram(addr=003802, fc=3) done
+TEST_IO_ REGS
+r/w DCP
+m68k_rw_ram(addr=001000, fc=5)
+ram u305 [002] -> 1;  9142ns
+ram u306 [002] -> 0;  9142ns
+ram u307 [002] -> a;  9142ns
+ram u308 [002] -> 0;  9142ns
+ram u309 [002] -> 0;  9142ns
+ram u30a [002] -> 4;  9142ns
+bootrom_l: 0800 -> 58
+bootrom_h: 0800 -> 4f
+74f251; sel 001, mux 0, ABC 001 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+RD_DCP_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+m68k_rw_ram(addr=001000, fc=5) done
+m68k_rw_ram(addr=001000, fc=5)
+74f251; sel 100, mux 1, ABC 100 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+WR_DCP_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+m68k_rw_ram(addr=001000, fc=5) done
+r/w PORT
+m68k_rw_ram(addr=001800, fc=5)
+ram u305 [003] -> 1; 10822ns
+ram u306 [003] -> 0; 10822ns
+ram u307 [003] -> a; 10822ns
+ram u308 [003] -> 0; 10822ns
+ram u309 [003] -> 0; 10822ns
+ram u30a [003] -> c; 10822ns
+bootrom_l: 0c00 -> 61
+bootrom_h: 0c00 -> 00
+74f251; sel 100, mux 1, ABC 100 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+RD_PORT_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=001800, fc=5) done
+m68k_rw_ram(addr=001800, fc=5)
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=001800, fc=5) done
+r/w SCC
+m68k_rw_ram(addr=002000, fc=5)
+ram u305 [004] -> 1; 12102ns
+ram u306 [004] -> 0; 12102ns
+ram u307 [004] -> a; 12102ns
+ram u308 [004] -> 0; 12102ns
+ram u309 [004] -> 0; 12102ns
+ram u30a [004] -> 2; 12102ns
+bootrom_l: 1000 -> 4e
+bootrom_h: 1000 -> 75
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+RD_SCC_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=002000, fc=5) done
+m68k_rw_ram(addr=002000, fc=5)
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+WR_SCC_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=002000, fc=5) done
+r/w TIMER
+m68k_rw_ram(addr=002800, fc=5)
+ram u305 [005] -> 1; 13382ns
+ram u306 [005] -> 0; 13382ns
+ram u307 [005] -> a; 13382ns
+ram u308 [005] -> 0; 13382ns
+ram u309 [005] -> 0; 13382ns
+ram u30a [005] -> a; 13382ns
+bootrom_l: 1400 -> 42
+bootrom_h: 1400 -> 10
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+RD_TIMER_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=002800, fc=5) done
+m68k_rw_ram(addr=002800, fc=5)
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 101, mux 0, ABC 101 D 000
+WR_TIMER_n asserts
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 1, ABC 101 D 100
+74f251; sel 101, mux 0, ABC 101 D 000
+74f251; sel 100, mux 1, ABC 100 D 000
+m68k_rw_ram(addr=002800, fc=5) done
+Halted at location **tb_top.v(183) time 19662 from call to $finish.
+  There were 0 error(s), 1 warning(s), and 1238 inform(s).

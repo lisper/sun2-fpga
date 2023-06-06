@@ -22,7 +22,7 @@
 		   output IPL0_n,
 
 		   input  P_FC2,
-		   input  P_FC1,
+		   inout  P_FC1,
 		   input  P_FC0,
    
 		   inout  P_A1,
@@ -100,21 +100,21 @@
      end
 
    // DTACK generator
-   wire IOACK_n;
+   wire IOACK_n, IOACK;
    
-   assign xx = (~IOACK_n | ~DCPACK_n);
+   assign IOACK = ~IOACK_n | ~DCPACK_n;
 
    wire P2_WAIT_n;
    assign P2_WAIT_n = 1'b1;
 
-   tri1 LTYPE0, LTYPE1;
+   wire LTYPE0, LTYPE1;
    
    ttl_74F251 u111(.D0(C_S5),
 		   .D1(C_S5),
 		   .D2(C_S5),
 		   .D3(C_S5),
 		   .D4(P2_WAIT_n),
-		   .D5(xx),
+		   .D5(IOACK),
 		   .D6(XACK),
 		   .D7(XACK),
 		   .A(LTYPE0),
@@ -163,7 +163,7 @@
 assign AS = ~P_AS_n;
    assign Q_AS_n = ~AS;
 
-   wire IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8;
+   tri1 IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8;
    tri1 IOD7,IOD6,IOD5,IOD4,IOD3,IOD2,IOD1,IOD0;
 
    wire [15:0] iodata;
@@ -209,43 +209,46 @@ assign AS = ~P_AS_n;
 		    .DR(d_u102),
 		    .CS_n(Q_AS_n));
       
-   reg [4:0]   LA1_5;
+   reg [5:1] LA1_5 = 0;
    always @(posedge AS)
      LA1_5 <= {P_A5, P_A4, P_A3, P_A2, P_A1 };
-   
+
    assign DS_n = ~(~P_UDS_n | ~P_LDS_n);
    assign RW = ~P_RW_n;
 
-   wire yy;
-   assign yy = ~(~RW | ~C_S7);
+   wire rw_s7;
+   assign rw_s7 = ~(~RW | ~C_S7);
    
-   assign IODS_n = ~(~DS_n & yy);
-   assign IOUDS = ~P_UDS_n & yy;
-   assign IOLDS = ~P_LDS_n & yy;
+   assign IODS_n = ~(~DS_n & ~rw_s7);
+   assign IOUDS = ~P_UDS_n & ~rw_s7;
+   assign IOLDS = ~P_LDS_n & ~rw_s7;
    
 
    // -------------------
 
-   wire C60, C60_n, C100_n;
+   wire C50, C50_n, C100_n;
 
-   ttl_74F74 u203_a(.D(C60_n),
+   ttl_74F74 u203_a(.D(C50_n),
 		    .CLK(clk40),
 		    .S(H1),
 		    .R(H0),
-		    .Q(C60),
-		    .Q_n(C60_n));
+		    .Q(C50),
+		    .Q_n(C50_n));
 
    ttl_74F74 u201_a(.D(C100_n),
-		    .CLK(C60),
+		    .CLK(C50),
 		    .S(H1),
 		    .R(H0),
 		    .Q(C100),
 		    .Q_n(C100_n));
 
+   assign #50 as_d = AS;
+   
    ttl_74F74 u201_b(.D(C100_n),
-		    .CLK(C60_n),
+		    .CLK(C50_n),
 		    .S(C_S3_n),
-		    .R(AS),
+//		    .R(AS),
+ .R(as_d),
 		    .Q(C_S3),
 		    .Q_n(C_S3_n));
 
@@ -256,14 +259,13 @@ assign AS = ~P_AS_n;
 		    .Q(C_S5),
 		    .Q_n(C_S5_n));
    
-   ttl_74F74 u206_a(.D(C_S6),
+   ttl_74F74 u205_a(.D(C_S6),
 		    .CLK(C100_n),
 		    .S(H1),
 		    .R(AS),
 		    .Q(C_S7),
 		    .Q_n());
 
-   
    ttl_74F74 u203_b(.D(VALID),
 		    .CLK(C100),
 		    .S(H1),
@@ -277,7 +279,7 @@ assign AS = ~P_AS_n;
 		    .R(EN_S4),
 		    .Q(C_S6),
 		    .Q_n(C_S6_n));
-   
+
 
    ttl_74F74 u208_a(.D(P_DTACK_n),
 		    .CLK(C100_n),
@@ -287,20 +289,26 @@ assign AS = ~P_AS_n;
 		    .Q_n(ENDS6));
 
    ttl_74F74 u208_b(.D(ENDS6_n),
-		    .CLK(C100),
+		    .CLK(C100_n),
 		    .S(H1),
 		    .R(H0),
 		    .Q(ENDS7_n),
 		    .Q_n(ENDS7));
 
-   tri1 DIS_n;
-	
+   wire DIS_n;
+
+   // Don't start S4 if mmu or refresh
    assign EN_S4 = DIS_n & C_S3;
 
    // DVMA decoder
-   wire P1_MRWC_n, P1_MWRC_n, P1_MRDC_n;
+   wire P1_MRWC_n, P1_MWRC_n;
+   tri1 P1_MRDC_n;
 
-   assign P1_MRWC_n = ~(~P1_MWRC_n | ~P1_MRDC_n);
+   assign P1_MRWC_n = ~(~P1_MWTC_n | ~P1_MRDC_n);
+
+   wire P1_A18_n, P1_A19_n;
+   assign P1_A18_n = 1;
+   assign P1_A19_n = 1;
    
    pal20L10_u212 u212(.I0(P1_A18_n),
 		      .I1(P1_A19_n),
@@ -360,8 +368,8 @@ wire XEN_n = 1'b1;
 		     .O0(P_AS_n),
 		     .O1(P_FC1),
 //temp
-//		   .Q0(XEN_n),
-//		   .Q1(REN_n),
+//		     .Q0(XEN_n),
+//		     .Q1(REN_n),
 		     .Q2(XHALT_n),
 		     .Q3(XBERR_n),
 		     .O2(P_BR_n),
@@ -437,34 +445,34 @@ wire XEN_n = 1'b1;
 
    ttl_25LS2518 u300(
 		     .D0(P_D0),
-		   .D1(P_D1),
-		   .D2(P_D2),
-		   .D3(P_D3),
-		   .Q0(CXU0),
-		   .Q1(CXU1),
-		   .Q2(CXU2),
-		   .Q3(CXU3),
-		   .Y0(P_D0),
-		   .Y1(P_D1),
-		   .Y2(P_D2),
-		   .Y3(P_D3),
-		   .CK(WR_CXL_n),
-		   .OE_n(RD_CXL_n));
+		     .D1(P_D1),
+		     .D2(P_D2),
+		     .D3(P_D3),
+		     .Q0(CXU0),
+		     .Q1(CXU1),
+		     .Q2(CXU2),
+		     .Q3(CXU3),
+		     .Y0(P_D0),
+		     .Y1(P_D1),
+		     .Y2(P_D2),
+		     .Y3(P_D3),
+		     .CK(WR_CXL_n),
+		     .OE_n(RD_CXL_n));
 
    ttl_25LS2518 u301(.D0(P_D8),
-		   .D1(P_D9),
-		   .D2(P_D10),
-		   .D3(P_D11),
-		   .Q0(CXS0),
-		   .Q1(CXS1),
-		   .Q2(CXS2),
-		   .Q3(CXS3),
-		   .Y0(P_D8),
-		   .Y1(P_D9),
-		   .Y2(P_D10),
-		   .Y3(P_D11),
-		   .CK(WR_CXU_n),
-		   .OE_n(RD_CXU_n));
+		     .D1(P_D9),
+		     .D2(P_D10),
+		     .D3(P_D11),
+		     .Q0(CXS0),
+		     .Q1(CXS1),
+		     .Q2(CXS2),
+		     .Q3(CXS3),
+		     .Y0(P_D8),
+		     .Y1(P_D9),
+		     .Y2(P_D10),
+		     .Y3(P_D11),
+		     .CK(WR_CXU_n),
+		     .OE_n(RD_CXU_n));
 
    ttl_74F257 u302(.A1(CXU0),
 		   .A2(CXU1),
@@ -482,6 +490,9 @@ wire XEN_n = 1'b1;
 		   .OE_n(1'b0));
 
    // Segment map
+   wire [11:0] sm_addr;
+   assign sm_addr = {P_A23, P_A22, P_A21, P_A20, P_A19, P_A18, P_A17, P_A16, P_A15, cx_a2, cx_a1, cx_a0};
+
    ttl_2168_sram u303(.A0(cx_a0),
 		      .A1(cx_a1),
 		      .A2(cx_a2),
@@ -499,7 +510,8 @@ wire XEN_n = 1'b1;
 		      .D0(IA23),
 		      .D1(IA22),
 		      .D2(IA21),
-		      .D3(IA20));
+		      .D3(IA20),
+		      .id(4'h3));
 
    ttl_2168_sram u304(.A0(cx_a0),
 		      .A1(cx_a1),
@@ -518,11 +530,14 @@ wire XEN_n = 1'b1;
 		      .D0(IA19),
 		      .D1(IA18),
 		      .D2(IA17),
-		      .D3(IA16));
+		      .D3(IA16),
+		      .id(4'h4));
 
    wire [11:0] pm_addr;
    assign pm_addr = {IA22,IA21,IA20,IA19,IA18,IA17,IA16,IA23,P_A14,P_A13,P_A12,P_A11};
-	 
+
+   tri1 VALID, PROT5, PROT4, PROT3, PROT2, PROT1, PROT0, TYPE2, TYPE1, TYPE0, ACC, MOD;
+
    // Page Map
    ttl_2168_sram u305(.A0(P_A11),
 		      .A1(P_A12),
@@ -538,14 +553,16 @@ wire XEN_n = 1'b1;
 		      .A11(IA22),
 		      .WE_n(WR_PMAP0U_n),
 		      .CE_n(1'b0),
-//		      .D0(VALID),
+		      .D0(VALID),
 		      .D1(PROT5),
 		      .D2(PROT4),
-		      .D3(PROT3)
+		      .D3(PROT3),
+		      .id(4'h5)
 		      );
 //temp
-   wire        VALID = 1'b1;
-   
+//   wire        VALID = 1'b1;
+//   assign VALID = 1'b1;
+
    ttl_2168_sram u306(.A0(P_A11),
 		      .A1(P_A12),
 		      .A2(P_A13),
@@ -563,11 +580,13 @@ wire XEN_n = 1'b1;
 		      .D0(PROT2),
 		      .D1(PROT1),
 		      .D2(PROT0),
-		      .D3(TYPE2)
+		      .D3(TYPE2),
+		      .id(4'h6)
 		      );
 
-   tri1 TYPE1;
-   tri1 TYPE0;
+//   tri1 TYPE1;
+//   tri1 TYPE0;
+//   tri1 MA14, MA13, MA12, MA11;
    
    ttl_2168_sram u307(
 		      .A0(P_A11),
@@ -587,7 +606,8 @@ wire XEN_n = 1'b1;
 		      .D0(TYPE1),
 		      .D1(TYPE0),
 		      .D2(ACC),
-		      .D3(MOD)
+		      .D3(MOD),
+		      .id(4'h7)
 		      );
 
    ttl_2168_sram u308(
@@ -603,12 +623,13 @@ wire XEN_n = 1'b1;
 		      .A9(IA20),
 		      .A10(IA21),
 		      .A11(IA22),
-		      .WE_n(WR_PMAP0U_n),
+		      .WE_n(WR_PMAP1U_n),
 		      .CE_n(1'b0),
 		      .D0(MA22),
 		      .D1(MA21),
 		      .D2(MA20),
-		      .D3(MA19)
+		      .D3(MA19),
+		      .id(4'h8)
 		      );
 
    ttl_2168_sram u309(
@@ -629,7 +650,8 @@ wire XEN_n = 1'b1;
 		      .D0(MA18),
 		      .D1(MA17),
 		      .D2(MA16),
-		      .D3(MA15)
+		      .D3(MA15),
+		      .id(4'h9)
 		      );
 
    ttl_2168_sram u310(
@@ -650,18 +672,30 @@ wire XEN_n = 1'b1;
 		      .D0(MA14),
 		      .D1(MA13),
 		      .D2(MA12),
-		      .D3(MA11)
+		      .D3(MA11),
+		      .id(4'ha)
 		   );
 
+//   reg [11:0]  _a;
+//   initial
+//    #2 begin
+//	#2 for (_a = 0; _a < 4094; _a = _a + 1) u305.ram[_a] = 4'b1111;
+//	for (_a = 0; _a < 4094; _a = _a + 1) u306.ram[_a] = 4'b1110;
+//	for (_a = 0; _a < 4094; _a = _a + 1) u307.ram[_a] = 4'b0000;
+//	for (_a = 0; _a < 4094; _a = _a + 1) u308.ram[_a] = _a[11:8];
+//	for (_a = 0; _a < 4094; _a = _a + 1) u309.ram[_a] = _a[7:4];
+//	for (_a = 0; _a < 4094; _a = _a + 1) u310.ram[_a] = _a[3:0];
+//     end
+
    // Statistics bit logic
-   ttl_74F74 u213_a(.D(TYPE0),
+   ttl_74F74 u312_a(.D(TYPE0),
 		    .CLK(C_S4),
 		    .S(H1),
 		    .R(H0),
 		    .Q(LTYPE0),
 		    .Q_n());
 
-   ttl_74F74 u213_ba(.D(TYPE1),
+   ttl_74F74 u312_b(.D(TYPE1),
 		    .CLK(C_S4),
 		    .S(H1),
 		    .R(H0),
@@ -679,7 +713,7 @@ wire XEN_n = 1'b1;
 		     .O0(DIS_n),
 		     .O1(ACC),		
 		     .Q0(TYPE1),
-		     .Q1(TYOE0),
+		     .Q1(TYPE0),
 		     .Q2(MOD),
 		     .Q3(ACC),
 		     .O2(P_BACK_n),
@@ -688,17 +722,21 @@ wire XEN_n = 1'b1;
 		     .OE_n(C_S6_n));
 
    wire WR_PMAP0X_n;
-   assign WR_PMAP0X_n = ~(~C_S6_n | WR_PMAP0L_n);
+//   assign WR_PMAP0X_n = ~(~C_S6_n | ~WR_PMAP0L_n);
+//assign WR_PMAP0X_n = ~C_S6_n & ~WR_PMAP0L_n;
+//assign WR_PMAP0X_n = /*C_S6_n &*/ WR_PMAP0L_n;
+//assign WR_PMAP0X_n = ~(~C_S6_n | WR_PMAP0L_n);
+   assign WR_PMAP0X_n = WR_PMAP0L_n;
 		   
    // Protection decoder
    ttl_am2949 u314(.A0(IA16),
 		   .A1(IA17),
-		   .A2(IA17),
-		   .A3(IA17),
-		   .A4(IA17),
-		   .A5(IA17),
-		   .A6(IA17),
-		   .A7(IA17),
+		   .A2(IA18),
+		   .A3(IA19),
+		   .A4(IA20),
+		   .A5(IA21),
+		   .A6(IA22),
+		   .A7(IA23),
 		   .B0(P_D0),
 		   .B1(P_D1),
 		   .B2(P_D2),
@@ -721,7 +759,7 @@ wire XEN_n = 1'b1;
 		   .A(RW_n),
 		   .B(P_FC1),
 		   .C(P_FC2),
-		   .Y(PROERR_n),
+		   .Y(PROTERR_n),
 		   .W(),
 		   .S(C_S4_n));
 
@@ -829,7 +867,7 @@ wire XEN_n = 1'b1;
 		   .Q3(RD_CXL_n),
 		   .Q4(WR_PMAP0L_n),
 		   .Q5(WR_PMAP1L_n),
-		   .Q6(WR_SWAP_n),
+		   .Q6(WR_SMAP_n),
 		   .Q7(WR_CXL_n));
 
    ttl_74F138 u323(.A0(P_A1),
@@ -894,7 +932,13 @@ wire XEN_n = 1'b1;
 		   .Q5(RD_TIMER_n),
 		   .Q6(),
 		   .Q7());
-		   
+
+   always @(negedge RD_DCP_n) $display("RD_DCP_n asserts");
+   always @(negedge RD_PORT_n) $display("RD_PORT_n asserts");
+   always @(negedge RD_SCC_n) $display("RD_SCC_n asserts");
+   always @(negedge RD_TIMER_n) $display("RD_TIMER_n asserts");
+   
+
    ttl_74F138 u402(.A0(MA11),
 		   .A1(MA12),
 		   .A2(MA13),
@@ -910,6 +954,10 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7());
 
+   always @(negedge WR_DCP_n) $display("WR_DCP_n asserts");
+   always @(negedge WR_SCC_n) $display("WR_SCC_n asserts");
+   always @(negedge WR_TIMER_n) $display("WR_TIMER_n asserts");
+   
    // ID PRom
    ttl_74S288_idprom u411(.A0(P_A11),
 			  .A1(P_A12),
@@ -993,11 +1041,11 @@ wire XEN_n = 1'b1;
 		  .D5(IOD13),
 		  .D6(IOD14),
 		  .D7(IOD15),
-		  .A0(LA1),
-		  .A1(LA2),
-		  .A2(LA3),
-		  .A3(LA4),
-		  .A4(LA5),
+		  .A0(LA1_5[1]),
+		  .A1(LA1_5[2]),
+		  .A2(LA1_5[3]),
+		  .A3(LA1_5[4]),
+		  .A4(LA1_5[5]),
 		  .CS_n(1'b0),
 		  .RD_n(RD_RTC_n),
 		  .WR_n(WR_RTC_n),
@@ -1024,26 +1072,26 @@ wire XEN_n = 1'b1;
 		   .CK(BERR),
 		   .OE_n(RD_ERROR_n));
 
-    // System ENable Reg.
+   // System ENable Reg.
    ttl_74LS273 u413(
 		    .D1(P_D0),
-		   .D2(P_D2),
-		   .D3(P_D4),
-		   .D4(P_D6),
-		   .D5(P_D7),
-		   .D6(P_D5),
-		   .D7(P_D3),
-		   .D8(P_D1),
-		   .Q1(EN_PARGEN),
-		   .Q2(EN_INT2),
-		   .Q3(EN_PARERR),
-		   .Q4(EN_INT),
-		   .Q5(BOOT_n),
-		   .Q6(EN_DVMA),
-		   .Q7(EN_INT3),
-		   .Q8(EN_INT1),
-		   .CK(WR_ENABLE_n),
-		   .CR_n(INIT_n));
+		    .D2(P_D2),
+		    .D3(P_D4),
+		    .D4(P_D6),
+		    .D5(P_D7),
+		    .D6(P_D5),
+		    .D7(P_D3),
+		    .D8(P_D1),
+		    .Q1(EN_PARGEN),
+		    .Q2(EN_INT2),
+		    .Q3(EN_PARERR),
+		    .Q4(EN_INT),
+		    .Q5(BOOT_n),
+		    .Q6(EN_DVMA),
+		    .Q7(EN_INT3),
+		    .Q8(EN_INT1),
+		    .CK(WR_ENABLE_n),
+		    .CR_n(INIT_n));
 
    ttl_74LS244 u414(.A11(EN_PARGEN),
 		    .A12(EN_INT2),
@@ -1065,23 +1113,23 @@ wire XEN_n = 1'b1;
 		    .G2(RD_ENABLE_n));
 
    pal16R4_u415 u415(.D0(MA14),
-		   .D1(MA13),
-		   .D2(MA12),
-		   .D3(MA11),
-		   .D4(RD_IO_n),
-		   .D5(WR_IO_n),
-		   .D6(C_S7),
-		   .D7(C_S5),
-		   .Q0(),
-		   .Q1(),		
-		   .Q2(),
-		   .Q3(),
-		   .Q4(),
-		   .Q5(IOACK_n),
-		   .O1(WR_RTC_n),
-		   .O2(RD_RTC_n),
-		   .CLK(C100_n),
-		   .OE_n(1'b0));
+		     .D1(MA13),
+		     .D2(MA12),
+		     .D3(MA11),
+		     .D4(RD_IO_n),
+		     .D5(WR_IO_n),
+		     .D6(C_S7),
+		     .D7(C_S5),
+		     .Q0(),
+		     .Q1(),		
+		     .Q2(),
+		     .Q3(),
+		     .Q4(),
+		     .Q5(IOACK_n),
+		     .O1(WR_RTC_n),
+		     .O2(RD_RTC_n),
+		     .CLK(C100_n),
+		     .OE_n(1'b0));
 		 
    // -------------------
 
@@ -1291,7 +1339,7 @@ wire XEN_n = 1'b1;
 `endif
 		   
 ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5,IOD4,IOD3,IOD2,IOD1,IOD0}),
-		.CD_n(LA1),
+		.CD_n(LA1_5[1]),
 		.CS_n(1'b0),
 		.RD_n(RD_TIMER_n),
 		.WR_n(WR_TIMER_n),
@@ -1326,8 +1374,8 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 		  .IFO_n(),
 		  .INT(INT_SCC_n),
 		  .INTA_n(1'b1),
-		  .AB_n(LA2),
-		  .DC_n(LA1),
+		  .AB_n(LA1_5[2]),
+		  .DC_n(LA1_5[1]),
 		  .CE_n(1'b0),
 		  .RD_n(RD_SCC_n),
 		  .WR_n(WR_SCC_n),
@@ -1357,7 +1405,7 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 		     .D3(WR_DCP_n),
 		     .D4(RD_DCP_n),
 		     .D5(1'b1),
-		     .D6(LA1),
+		     .D6(LA1_5[1]),
 		     .D7(1'b1),
 		     .Q0_n(),
 		     .Q1_n(),
@@ -1367,7 +1415,7 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 		     .Q5_n(),
 		     .Q6_n(XMDS_n),
 		     .Q7_n(MAS_n),
-		     .CLK(c100),
+		     .CLK(C100),
 		     .OE_n(1'b0));
 
    assign MDS_n = XMDS_n;
@@ -1592,6 +1640,8 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
    assign XIOWC_n = ~(~IOWC_n & ~ENDS6);
 
    tri1 y24;
+
+   tri1 P1_XACK_n, P1_WRDC_n, P1_IORC_n, P1_MWTC_n, P1_IOWC_n;
    
    ttl_74LS244 u717(.A11(MRDC_n),
 		   .A12(IORC_n),

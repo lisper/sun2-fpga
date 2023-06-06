@@ -16,18 +16,19 @@ module ttl_2168_sram(
 		     inout D0,
 		     inout D1,
 		     inout D2,
-		     inout D3
+		     inout D3,
+		     input [3:0] id
 		     );
 
    wire [11:0] addr;
-   wire [7:0]  data;
+   wire [3:0]  data;
    reg [3:0]   ram[0:4095];
 
    task init;
-      reg [11:0] a;
+      integer a;
       begin
 	 // random value?
-	 for (a = 0; a < 4094; a = a + 1) ram[a] = 0;
+	 for (a = 0; a <= 4095; a = a + 1) ram[a] = 4'b0;
       end
    endtask
    
@@ -39,15 +40,15 @@ module ttl_2168_sram(
    assign addr = { A11, A10, A9, A8, A7, A6, A5, A4, A3, A2, A1, A0 };
    assign data = ram[addr];
 
-   always @(*)
+   always @(addr or WE_n or CE_n)
      begin
 	if (~WE_n) begin
-	   //ram[addr] = { D3, D2, D1, D0 };
-	   $display("ram[%x] <- %x; %t", addr, { D3,D2,D1,D0 }, $time); 
+	   ram[addr] = { D3, D2, D1, D0 };
+	   $display("ram u30%x [%x] <- %x; %t", id, addr, { D3,D2,D1,D0 }, $time); 
 	end
 
 	if (~CE_n & WE_n) begin
-	   $display("ram[%x] -> %x; %t", addr, { data[3],data[2],data[1],data[0] }, $time); 
+	   $display("ram u30%x [%x] -> %x; %t", id, addr, { data[3],data[2],data[1],data[0] }, $time); 
 	end
      end
    

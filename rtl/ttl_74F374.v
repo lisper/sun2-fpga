@@ -17,28 +17,21 @@ module ttl_74F374 (input D1,
 		   input  CLK,
 		   input  OE);
 
-   reg q1, q2, q3, q4, q5, q6, q7, q8;
+   reg [7:0] q = 8'b0;
 
    always @(posedge CLK)
      begin
-	q1 <= D1;
-	q2 <= D2;
-	q3 <= D3;
-	q4 <= D4;
-	q5 <= D5;
-	q6 <= D6;
-	q7 <= D7;
-	q8 <= D8;
+	q <= { D8, D7, D6, D5, D4, D3, D2, D1 };
      end
 
-     assign Q1 = ~OE ? q1 : 1'bz;
-     assign Q2 = ~OE ? q2 : 1'bz;
-     assign Q3 = ~OE ? q3 : 1'bz;
-     assign Q4 = ~OE ? q4 : 1'bz;
-     assign Q5 = ~OE ? q5 : 1'bz;
-     assign Q6 = ~OE ? q6 : 1'bz;
-     assign Q7 = ~OE ? q7 : 1'bz;
-     assign Q8 = ~OE ? q8 : 1'bz;
+     assign Q1 = ~OE ? q[0] : 1'bz;
+     assign Q2 = ~OE ? q[1] : 1'bz;
+     assign Q3 = ~OE ? q[2] : 1'bz;
+     assign Q4 = ~OE ? q[3] : 1'bz;
+     assign Q5 = ~OE ? q[4] : 1'bz;
+     assign Q6 = ~OE ? q[5] : 1'bz;
+     assign Q7 = ~OE ? q[6] : 1'bz;
+     assign Q8 = ~OE ? q[7] : 1'bz;
    
 endmodule
 

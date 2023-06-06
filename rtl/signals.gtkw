@@ -1,0 +1,205 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Tue Jun  6 11:22:29 2023
+[*]
+[dumpfile] "/files/code/git/sun2-fpga/rtl/sun2.vcd"
+[dumpfile_mtime] "Tue Jun  6 11:21:30 2023"
+[dumpfile_size] 37418841
+[savefile] "/files/code/git/sun2-fpga/rtl/signals.gtkw"
+[timestart] 3942
+[size] 1650 875
+[pos] -133 7
+*-10.622758 10869 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb.
+[treeopen] tb.dut.
+[treeopen] tb.dut.sun2.
+[treeopen] tb.dut.sun2.u303.
+[sst_width] 233
+[signals_width] 309
+[sst_expanded] 1
+[sst_vpaned_height] 507
+@28
+tb.dut.sun2.C100
+tb.dut.sun2.BOOTEN_n
+tb.dut.sun2.BOOT_n
+tb.dut.sun2.P_RESET_n
+tb.dut.sun2.INIT_n
+tb.dut.sun2.INITIN_n
+tb.dut.sun2.INITOUT_n
+tb.dut.sun2.P_AS_n
+tb.dut.sun2.P_DTACK_n
+tb.dut.sun2.VALID
+tb.dut.sun2.LTYPE0
+tb.dut.sun2.LTYPE1
+tb.dut.sun2.EN_S4
+tb.dut.sun2.C_S4
+tb.dut.sun2.C_S5
+tb.dut.sun2.u111.sel[2:0]
+tb.dut.sun2.u111.mux
+tb.dut.sun2.u111.Y
+@200
+-
+@28
+tb.dut.sun2.XACK
+tb.dut.sun2.IOACK_n
+tb.dut.sun2.DCPACK_n
+tb.dut.sun2.IOACK_n
+tb.dut.sun2.DCPACK_n
+@200
+-
+@22
+tb.dut.sun2.p_addr[23:0]
+@28
+tb.dut.sun2.VALID
+@22
+tb.dut.sun2.u305.addr[11:0]
+tb.dut.sun2.u305.data[3:0]
+@28
+tb.dut.sun2.u305.WE_n
+tb.dut.sun2.WR_PMAP0U_n
+tb.dut.sun2.u316.dis
+tb.dut.sun2.DIS_n
+@200
+-
+@28
+tb.dut.sun2.P_HALT_n
+tb.dut.sun2.REN_n
+tb.dut.sun2.XEN_n
+tb.dut.sun2.XHALT_n
+tb.dut.sun2.SYSB
+tb.dut.sun2.TYPE1
+tb.dut.sun2.C_S6_n
+tb.dut.sun2.C_S4
+@22
+tb.dut.sun2.pm_addr[11:0]
+@28
+tb.dut.sun2.WR_PMAP0X_n
+@22
+tb.dut.sun2.u307.addr[11:0]
+tb.dut.sun2.u307.data[3:0]
+@28
+tb.dut.sun2.u213.sds
+tb.dut.sun2.u213.sysb
+tb.dut.sun2.u213.rreq
+tb.dut.sun2.u213.ben
+tb.dut.sun2.u213.xberr
+tb.dut.sun2.u213.sas
+tb.dut.sun2.u213.xhalt
+@200
+-
+@28
+tb.dut.sun2.P_FC0
+tb.dut.sun2.P_FC1
+tb.dut.sun2.P_FC2
+tb.dut.sun2.P_LDS_n
+tb.dut.sun2.P_UDS_n
+tb.dut.sun2.P_RW_n
+tb.dut.sun2.RW_n
+tb.dut.sun2.P_SPROG_n
+tb.dut.sun2.P_VPA_n
+@22
+tb.dut.sun2.iodata[15:0]
+tb.dut.sun2.p_addr[23:0]
+tb.dut.sun2.p_databus_in[15:0]
+@28
+tb.dut.sun2.C_S3
+tb.dut.sun2.C_S4
+tb.dut.sun2.C_S5
+tb.dut.sun2.C_S6
+tb.dut.sun2.C_S7
+@200
+-
+@28
+tb.dut.sun2.WR_CXU_n
+tb.dut.sun2.WR_CXL_n
+@22
+tb.dut.sun2.u300.r[3:0]
+@28
+tb.dut.sun2.u300.CK
+tb.dut.sun2.WR_SMAP_n
+tb.dut.sun2.RD_SMAP_n
+@200
+-
+@28
+tb.dut.sun2.RD_PMAP0L_n
+tb.dut.sun2.RD_PMAP0U_n
+tb.dut.sun2.RD_PMAP1L_n
+tb.dut.sun2.RD_PMAP1U_n
+tb.dut.sun2.WR_PMAP0L_n
+tb.dut.sun2.WR_PMAP0U_n
+tb.dut.sun2.WR_PMAP0X_n
+tb.dut.sun2.WR_PMAP1L_n
+tb.dut.sun2.WR_PMAP1U_n
+tb.dut.sun2.VALID
+@200
+-
+@28
+tb.dut.sun2.WR_RAM_n
+tb.dut.sun2.WR_DIAG_n
+tb.dut.sun2.RD_IO_n
+tb.dut.sun2.WR_IO_n
+@200
+-
+@28
+tb.dut.sun2.RD_ID_n
+tb.dut.sun2.RD_ERROR_n
+tb.dut.sun2.RD_ENABLE_n
+tb.dut.sun2.WR_ENABLE_n
+tb.dut.sun2.RD_RAM_n
+tb.dut.sun2.RD_PROM_n
+tb.dut.sun2.RD_DCP_n
+tb.dut.sun2.WR_DCP_n
+tb.dut.sun2.RD_PORT_n
+tb.dut.sun2.RD_SCC_n
+tb.dut.sun2.WR_SCC_n
+tb.dut.sun2.RD_TIMER_n
+tb.dut.sun2.WR_TIMER_n
+tb.dut.sun2.RD_RTC_n
+tb.dut.sun2.WR_RTC_n
+@200
+-
+@22
+tb.dut.sun2.pm_addr[11:0]
+tb.dut.sun2.u310.addr[11:0]
+@28
+tb.dut.sun2.MA14
+tb.dut.sun2.MA13
+tb.dut.sun2.MA12
+tb.dut.sun2.MA11
+tb.dut.sun2.P_A1
+tb.dut.sun2.P_A2
+tb.dut.sun2.RW
+tb.dut.sun2.IODS_n
+tb.dut.sun2.P_MMU_n
+tb.dut.sun2.P_A3
+@200
+-
+@28
+tb.dut.sun2.P_AS_n
+tb.dut.sun2.P_DTACK_n
+tb.dut.sun2.DIS_n
+tb.dut.sun2.EN_S4
+tb.dut.sun2.VALID
+tb.dut.sun2.C_S3
+tb.dut.sun2.C_S4
+tb.dut.sun2.C_S5
+tb.dut.sun2.C_S6
+tb.dut.sun2.C_S7
+@200
+-
+@28
+tb.dut.sun2.INIT_n
+tb.dut.sun2.RW
+tb.dut.sun2.IODS_n
+tb.dut.sun2.DS_n
+tb.dut.sun2.P_MMU_n
+tb.dut.sun2.P_A3
+tb.dut.sun2.RD_IO_n
+@22
+tb.dut.sun2.u413.in[7:0]
+tb.dut.sun2.diag_reg[7:0]
+@200
+-
+-
+[pattern_trace] 1
+[pattern_trace] 0

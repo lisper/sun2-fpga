@@ -60,8 +60,9 @@ module pal16R4_u718(input D0,
 	aen <= ~q1 * q0 * ~p1init +
 	       ~q1 * sysb * ~p1init +
 	       ~q0 * ~test * sysb * ~p1busy * p1bprn * ~p1init;
-	$display("u718: aen=%b cbrqo=%b; q %b%b, p1init %b, sysb %b, test %b, p1cbrq %b p1busy %b p1bprn %b",
-		 aen, cbrqo, q1,q0, p1init, sysb, test, p1cbrq, p1busy, p1bprn);
+
+//	$display("u718: aen=%b cbrqo=%b; q %b%b, p1init %b, sysb %b, test %b, p1cbrq %b p1busy %b p1bprn %b",
+//		 aen, cbrqo, q1,q0, p1init, sysb, test, p1cbrq, p1busy, p1bprn);
 
 	q1 <= ~q1 * ~p1cbrq * p1bprn * ~p1init +
 	       ~q1 * q0 * ~p1init +

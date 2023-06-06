@@ -88,8 +88,12 @@ module pal20L10_u212(input I0,
    assign p1_xack = c_s7 * p1_mrdc * ~proterr * ~parerr + // DVMA READ CYCLE
 		    c_s7 * p1_mrwc * ~p1_mrdc * ~proterr; // DVMA WRITE CYCLE
 
+   wire xreq_f;
+   
    assign xreq = en_dvma * ~p1_a19 * ~p1_a18 * p1_mrwc * ~aen * ~xen +  // SET
-		 xreq * p1_mrwc;                                        // HOLD
+		 xreq_f * p1_mrwc;                                      // HOLD
 
+   assign xreq_f = $time == 0 ? 0 : xreq;
+   
 endmodule
 

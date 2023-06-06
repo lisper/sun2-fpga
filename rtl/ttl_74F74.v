@@ -8,7 +8,7 @@ module ttl_74F74(input D,
 
    reg q = 0;
    
-   always @ (posedge CLK or negedge R or negedge S)
+   always @(posedge CLK or negedge R or negedge S)
      begin
          if (~R)
            q <= 0;

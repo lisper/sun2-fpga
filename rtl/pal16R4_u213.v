@@ -24,7 +24,7 @@ module pal16R4_u213(input D0,
 
    wire c100, sysb, ben, sack, sas, p_bg, xreq, rreq, sds;
    wire p_back, p_br, fc1, p_as;
-   reg 	xen, ren, xberr, xhalt;
+   reg 	xen = 0, ren = 0, xberr = 0, xhalt = 0;
        
    // c100 sysb /ben /sack /sas /p.bg /xreq /rreq /sds gnd
    assign c100 = CLK;

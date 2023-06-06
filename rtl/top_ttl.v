@@ -1,6 +1,7 @@
 `timescale 1ns / 1ns
 
 `include "ttl_74F74.v"
+`include "ttl_74F74_d.v"
 `include "ttl_74F138.v"
 `include "ttl_74LS148.v"
 `include "ttl_74F151.v"
@@ -49,8 +50,8 @@ module top(input clk40);
    tri1 P_BR_n;
    tri1 P_BGACK_n;
 
-   wire P_RESET_n;
-   wire P_HALT_n;
+   tri1 P_RESET_n;
+   tri1 P_HALT_n;
 
    tri1 P_AS_n;
    tri1 P_RW_n;
@@ -66,29 +67,29 @@ module top(input clk40);
    wire P_FC1;
    wire P_FC0;
    
-   wire P_A1;
-   wire P_A2;
-   wire P_A3;
-   wire P_A4;
-   wire P_A5;
-   wire P_A6;
-   wire P_A7;
-   wire P_A8;
-   wire P_A9;
-   wire P_A10;
-   wire P_A11;
-   wire P_A12;
-   wire P_A13;
-   wire P_A14;
-   wire P_A15;
-   wire P_A16;
-   wire P_A17;
-   wire P_A18;
-   wire P_A19;
-   wire P_A20;
-   wire P_A21;
-   wire P_A22;
-   wire P_A23;
+   tri1 P_A1;
+   tri1 P_A2;
+   tri1 P_A3;
+   tri1 P_A4;
+   tri1 P_A5;
+   tri1 P_A6;
+   tri1 P_A7;
+   tri1 P_A8;
+   tri1 P_A9;
+   tri1 P_A10;
+   tri1 P_A11;
+   tri1 P_A12;
+   tri1 P_A13;
+   tri1 P_A14;
+   tri1 P_A15;
+   tri1 P_A16;
+   tri1 P_A17;
+   tri1 P_A18;
+   tri1 P_A19;
+   tri1 P_A20;
+   tri1 P_A21;
+   tri1 P_A22;
+   tri1 P_A23;
 
    tri1 P_D0;
    tri1 P_D1;

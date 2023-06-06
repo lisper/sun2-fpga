@@ -27,7 +27,7 @@ module pal20X10_u211 (input I0,
 		      input OE_n);
 
    wire c100, c200, por, sysb, sds, initin, ren, p_halt, as, tin;
-   reg q0=0, q1=0, q2=0, q3=0, q4=0, q5=0, rreq, init = 0, t=0, timeout = 0;
+   reg q0=0, q1=0, q2=0, q3=0, q4=0, q5=0, rreq = 0, init = 0, t=0, timeout = 0;
    
    // c100 /c200 /por sysb /sds /initin notused /ren /p.halt /as tin gnd
    assign c100 = CLK;
@@ -131,8 +131,7 @@ module pal20X10_u211 (input I0,
 		//
 //		c200 * q0 * q1 * q2 * q3 * q4 * q5 * p_halt * ~sds * ~sysb * ~por;
 //temp
-	init <= init + por;
-	
+	init <= (c200 * por);
 	
 	t <= t * as ^
 	     c200 * q0 * q1 * q2 * q3 * q4 * as;
