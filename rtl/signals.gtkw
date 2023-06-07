@@ -1,23 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Tue Jun  6 11:22:29 2023
+[*] Tue Jun  6 23:42:29 2023
 [*]
 [dumpfile] "/files/code/git/sun2-fpga/rtl/sun2.vcd"
-[dumpfile_mtime] "Tue Jun  6 11:21:30 2023"
-[dumpfile_size] 37418841
+[dumpfile_mtime] "Tue Jun  6 23:42:09 2023"
+[dumpfile_size] 336514
 [savefile] "/files/code/git/sun2-fpga/rtl/signals.gtkw"
-[timestart] 3942
-[size] 1650 875
-[pos] -133 7
-*-10.622758 10869 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 7949
+[size] 1650 862
+[pos] -1 -1
+*-9.821261 10813 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.dut.
 [treeopen] tb.dut.sun2.
 [treeopen] tb.dut.sun2.u303.
 [sst_width] 233
-[signals_width] 309
+[signals_width] 325
 [sst_expanded] 1
-[sst_vpaned_height] 507
+[sst_vpaned_height] 498
 @28
 tb.dut.sun2.C100
 tb.dut.sun2.BOOTEN_n
@@ -134,7 +134,6 @@ tb.dut.sun2.VALID
 @200
 -
 @28
-tb.dut.sun2.WR_RAM_n
 tb.dut.sun2.WR_DIAG_n
 tb.dut.sun2.RD_IO_n
 tb.dut.sun2.WR_IO_n
@@ -146,6 +145,7 @@ tb.dut.sun2.RD_ERROR_n
 tb.dut.sun2.RD_ENABLE_n
 tb.dut.sun2.WR_ENABLE_n
 tb.dut.sun2.RD_RAM_n
+tb.dut.sun2.WR_RAM_n
 tb.dut.sun2.RD_PROM_n
 tb.dut.sun2.RD_DCP_n
 tb.dut.sun2.WR_DCP_n
@@ -156,6 +156,21 @@ tb.dut.sun2.RD_TIMER_n
 tb.dut.sun2.WR_TIMER_n
 tb.dut.sun2.RD_RTC_n
 tb.dut.sun2.WR_RTC_n
+@200
+-
+@22
+tb.dut.sun2.p2_addr[22:0]
+tb.dut.sun2.p2_di[15:0]
+@23
+tb.dut.sun2.p2_do[15:0]
+@28
+tb.dut.sun2.P2_CAS_n
+tb.dut.sun2.P2_RAS_n
+tb.dut.sun2.P2_REFR_n
+tb.dut.sun2.P2_RW_n
+tb.dut.sun2.P2_WAIT_n
+tb.dut.sun2.P2_WEL_n
+tb.dut.sun2.P2_WEU_n
 @200
 -
 @22
@@ -198,6 +213,26 @@ tb.dut.sun2.RD_IO_n
 @22
 tb.dut.sun2.u413.in[7:0]
 tb.dut.sun2.diag_reg[7:0]
+@200
+-
+@28
+tb.dut.sun2.u415.CLK
+tb.dut.sun2.u415.IOACK
+tb.dut.sun2.u415.RDRTC
+tb.dut.sun2.u415.WRRTC
+tb.dut.sun2.u415.RDIO
+tb.dut.sun2.u415.WRIO
+tb.dut.sun2.u415.IQ0
+tb.dut.sun2.u415.IQ1
+tb.dut.sun2.u415.IQ2
+tb.dut.sun2.u415.IQ3
+tb.dut.sun2.u415.CS5
+tb.dut.sun2.u415.MA14
+tb.dut.sun2.u415.MA13
+tb.dut.sun2.u415.MA12
+tb.dut.sun2.u415.MA11
+tb.dut.sun2.u415.CLK100
+tb.dut.sun2.u415.CS5
 @200
 -
 -
