@@ -167,8 +167,11 @@ module tb();
 	 dut.m68010.m68k_rw_ram(24'h000004, 5, 1, 16'h0000); // read
 	 dut.m68010.m68k_rw_ram(24'h000004, 5, 0, 16'h00a5); // write
 
-	 dut.m68010.m68k_rw_ram(24'h000f08, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h000f08, 5, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h001234, 5, 1, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h001234, 5, 0, 16'h00a5); // write
+
+	 dut.m68010.m68k_rw_ram(24'h005678, 5, 1, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h005678, 5, 0, 16'h00a5); // write
       end
    endtask
 	

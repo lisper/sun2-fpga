@@ -1,4 +1,16 @@
-
+// Sun2 "guts" in verilog
+//
+// Pretty much a straight transcription of the schematics into verilog,
+// using modules for all TTL chips.  I want to first get things stable
+// using old school 74xxx parts and then slowly convert it into more modern
+// verilog, and then eventually into an FPGA with a real plastic 68010 chip.
+//
+// I should be able to squeeze the basic SCC, timer chip and dram into a simple FPGA
+// with some HDMI video.
+//
+// Brad Parker brad@heeltoe.com 6/2023
+//
+  
    module sun2_ttl(
 		   input  clk40,
 		   output C100,
@@ -559,9 +571,6 @@ wire XEN_n = 1'b1;
 		      .D3(PROT3),
 		      .id(4'h5)
 		      );
-//temp
-//   wire        VALID = 1'b1;
-//   assign VALID = 1'b1;
 
    ttl_2168_sram u306(.A0(P_A11),
 		      .A1(P_A12),
@@ -675,17 +684,6 @@ wire XEN_n = 1'b1;
 		      .D3(MA11),
 		      .id(4'ha)
 		   );
-
-//   reg [11:0]  _a;
-//   initial
-//    #2 begin
-//	#2 for (_a = 0; _a < 4094; _a = _a + 1) u305.ram[_a] = 4'b1111;
-//	for (_a = 0; _a < 4094; _a = _a + 1) u306.ram[_a] = 4'b1110;
-//	for (_a = 0; _a < 4094; _a = _a + 1) u307.ram[_a] = 4'b0000;
-//	for (_a = 0; _a < 4094; _a = _a + 1) u308.ram[_a] = _a[11:8];
-//	for (_a = 0; _a < 4094; _a = _a + 1) u309.ram[_a] = _a[7:4];
-//	for (_a = 0; _a < 4094; _a = _a + 1) u310.ram[_a] = _a[3:0];
-//     end
 
    // Statistics bit logic
    ttl_74F74 u312_a(.D(TYPE0),
@@ -1151,7 +1149,7 @@ wire XEN_n = 1'b1;
    assign p2_addr = {         P2_A22, P2_A21, P2_A20, P2_A19, P2_A18,   1'b0,   1'b0,
                         1'b0,   1'b0,   1'b0,   1'b0,   1'b0,   1'b0, P2_A09, P2_A08,
 		      P2_A07, P2_A06, P2_A05, P2_A04, P2_A03, P2_A02, P2_A01, 1'b0 };
-		  
+   
    ttl_74LS244 u500(.A11(P_A1),
 		   .A12(P_A2),
 		   .A13(P_A3),
@@ -1229,21 +1227,21 @@ wire XEN_n = 1'b1;
 		   .G2(RD_RAM_n));
 
    ttl_74LS244 u502(.A11(P_A9),
-		   .A24(BEN_n),
 		   .A12(MA18),
-		   .A23(C_S4_n),
 		   .A13(MA19),
-		   .A22(MA22),
 		   .A14(MA20),
 		   .A21(MA21),
+		   .A22(MA22),
+		   .A23(C_S4_n),
+		   .A24(BEN_n),
 		   .Y11(P2_A09),
-		   .Y24(P2_REFR_n),
 		   .Y12(P2_A18),
-		   .Y23(P2_CAS_n),
 		   .Y13(P2_A19),
-		   .Y22(P2_A22),
 		   .Y14(P2_A20),
 		   .Y21(P2_A21),
+		   .Y22(P2_A22),
+		   .Y23(P2_CAS_n),
+		   .Y24(P2_REFR_n),
 		   .G1(1'b0),
 		   .G2(1'b0));
 
@@ -1691,5 +1689,31 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 
    wire [7:0]  leds;
    assign leds = diag_reg;
-   
+
+
+   // -------------------
+
+   reg [22:0]  p2_cap_addr;
+
+   always @(posedge C100)
+     if (C_S3_n & ~P2_RAS_n)
+       begin
+	  p2_cap_addr[9:0] <= { P2_A09, P2_A08,
+				P2_A07, P2_A06, P2_A05, P2_A04,
+				P2_A03, P2_A02, P2_A01, 1'b0 };
+	  p2_cap_addr[22:18] <= { P2_A22, P2_A21, P2_A20, P2_A19, P2_A18 };
+       end
+     else
+       if (~C_S3_n & ~P2_CAS_n)
+	 begin
+	    p2_cap_addr[17] <= P2_A01;
+	    p2_cap_addr[10] <= P2_A02;
+	    p2_cap_addr[11] <= P2_A03;
+	    p2_cap_addr[12] <= P2_A04;
+	    p2_cap_addr[13] <= P2_A05;
+	    p2_cap_addr[14] <= P2_A06;
+	    p2_cap_addr[15] <= P2_A07;
+	    p2_cap_addr[16] <= P2_A08;
+	 end
+       
 endmodule
