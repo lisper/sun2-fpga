@@ -596,6 +596,16 @@ wire XEN_n = 1'b1;
 //   tri1 TYPE1;
 //   tri1 TYPE0;
 //   tri1 MA14, MA13, MA12, MA11;
+
+   wire [22:0] map_addr;
+   assign map_addr = { MA22,MA21,MA20,MA19,MA18,MA17,MA16,
+		       MA15,MA14,MA13,MA12,MA11,11'b0 };
+
+   wire [22:0] ia_addr;
+   assign ia_addr = { IA22,IA21,IA20,IA19,IA18,IA17,IA16, 16'b0 };
+   
+   always @(posedge C_S5) $display("ia_addr %x", ia_addr);
+   always @(posedge C_S5) $display("map_addr %x", map_addr);
    
    ttl_2168_sram u307(
 		      .A0(P_A11),
@@ -754,13 +764,26 @@ wire XEN_n = 1'b1;
 		   .D5(PROT4),
 		   .D6(PROT3),
 		   .D7(L),
-		   .A(RW_n),
+		   .A(RW),
 		   .B(P_FC1),
 		   .C(P_FC2),
-		   .Y(PROTERR_n),
-		   .W(),
+// bug?
+//		   .Y(PROTERR_n),
+//		   .W(),
+		   .Y(),
+		   .W(PROTERR_n),
 		   .S(C_S4_n));
 
+   wire Z0, Z1, Z2, Z3, Z4, Z5, Z6, Z7;
+   assign Z0 = 1'b0;
+   assign Z1 = 1'b0;
+   assign Z2 = 1'b0;
+   assign Z3 = 1'b0;
+   assign Z4 = 1'b0;
+   assign Z5 = 1'b0;
+   assign Z6 = 1'b0;
+   assign Z7 = 1'b0;
+   
    ttl_am2949 u317(.A0(Z0),
 		   .A1(Z1),
 		   .A2(Z2),
@@ -883,6 +906,14 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7(WR_CXU_n));
 
+   always @(negedge WR_SMAP_n) $display("WR_SMAP_n assert");
+   always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert");
+   always @(negedge WR_PMAP1L_n) $display("WR_PMA10L_n assert");
+   always @(negedge WR_PMAP0U_n) $display("WR_PMAP0U_n assert");
+   always @(negedge WR_PMAP1U_n) $display("WR_PMAP0U_n assert");
+   always @(negedge WR_CXL_n) $display("WR_CXL_n assert");
+   always @(negedge WR_CXU_n) $display("WR_CXU_n assert");
+
    ttl_74F138 u324(.A0(P_A1),
 		   .A1(P_A2),
 		   .A2(RW),
@@ -897,8 +928,16 @@ wire XEN_n = 1'b1;
 		   .Q5(WR_DIAG_n),
 		   .Q6(),
 		   .Q7(WR_ENABLE_n));
-		   
+
+   always @(negedge RD_ENABLE_n) $display("RD_ENABLE_n asserts");
+   always @(negedge WR_ENABLE_n) $display("WR_ENABLE_n asserts");
+   always @(negedge BOOT_n) $display("BOOT_n asserts");
+   always @(posedge BOOT_n) $display("BOOT_n deasserts");
+
    // -------------------
+
+   always @(negedge RD_RAM_n) $display("RD_RAM_n assert");
+   always @(negedge WR_RAM_n) $display("WR_RAM_n assert");
 
    // Strobe Decoders
    ttl_74F138 U400(.A0(LTYPE0),
@@ -935,6 +974,8 @@ wire XEN_n = 1'b1;
    always @(negedge RD_PORT_n) $display("RD_PORT_n asserts");
    always @(negedge RD_SCC_n) $display("RD_SCC_n asserts");
    always @(negedge RD_TIMER_n) $display("RD_TIMER_n asserts");
+   always @(negedge RD_PROM_n) $display("RD_PROM_n asserts");
+   always @(negedge RD_IO_n) $display("RD_IO_n asserts");
    
 
    ttl_74F138 u402(.A0(MA11),
@@ -1070,7 +1111,7 @@ wire XEN_n = 1'b1;
 		   .CK(BERR),
 		   .OE_n(RD_ERROR_n));
 
-   // System ENable Reg.
+   // System Enable Reg.
    ttl_74LS273 u413(
 		    .D1(P_D0),
 		    .D2(P_D2),
@@ -1374,6 +1415,19 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 		.OUT4(int6c),
 		.OUT5(int5));
 
+   always @(posedge RD_TIMER_n)
+     if (LA1_5[1])
+       $display("timer read c %x", iodata);
+     else
+       $display("timer read d %x", iodata);
+
+   always @(posedge WR_TIMER_n)
+     if (LA1_5[1])
+       $display("timer write c %x", iodata);
+     else
+       $display("timer write d %x", iodata);
+   
+   
    assign INT7_n = ~int7;
    assign INT6_n = ~(int6a | int6b | int6c);
    assign INT5_n = ~int5;
@@ -1715,5 +1769,17 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 	    p2_cap_addr[15] <= P2_A07;
 	    p2_cap_addr[16] <= P2_A08;
 	 end
-       
+
+   p2_intf p2_bus(.clk(C100),
+		  .addr(p2_cap_addr),
+		  .ras_n(P2_RAS_n),
+		  .cas_n(P2_CAS_n),
+		  .wel_n(P2_WEL_n),
+		  .weu_n(P2_WEU_n),
+		  .rw_n(P2_RW_n),
+		  .go_n(~C_S7),
+		  .wait_n(P2_WAIT_n),
+		  .datao(p2_do),
+		  .datai(p2_di));
+		       
 endmodule

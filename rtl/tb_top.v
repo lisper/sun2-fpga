@@ -9,28 +9,28 @@ module tb();
 
    task test_eeprom;
       begin
-	 dut.m68010.m68k_rw_ram(24'h00000000, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h00000002, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h00000004, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h00000006, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h00000008, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h0000000a, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h0000000c, 6, 1, 16'h0000);
-	 dut.m68010.m68k_rw_ram(24'h0000000f, 6, 1, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h00000000, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h00000002, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h00000004, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h00000006, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h00000008, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h0000000a, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h0000000c, 6, 1, 0, 16'h0000);
+	 dut.m68010.m68k_rw_ram(24'h0000000f, 6, 1, 0, 16'h0000);
       end
    endtask
 
    task test_mmu_regs;
       begin
 	 // id
-	 dut.m68010.m68k_rw_ram(24'h00000008, 3, 1, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h00000008, 3, 1, 0, 16'h0000); // read
 	 // diag
-	 dut.m68010.m68k_rw_ram(24'h0000000a, 3, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h0000000a, 3, 0, 0, 16'h00a5); // write
 	 // bus error reg
-	 dut.m68010.m68k_rw_ram(24'h0000000c, 3, 1, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h0000000c, 3, 1, 0, 16'h0000); // read
 	 // enable
-	 dut.m68010.m68k_rw_ram(24'h0000000e, 3, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h0000000e, 3, 0, 16'h00ff); // write
+	 dut.m68010.m68k_rw_ram(24'h0000000e, 3, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h0000000e, 3, 0, 0, 16'h00ff); // write
       end
    endtask
 
@@ -82,39 +82,34 @@ module tb();
 	 // m: modified bit
 
 	 $display("SETUP_PMAP");
-	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 16'hec00); // write page map
+	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 0, 16'hec00); // write page map
 
-	 dut.m68010.m68k_rw_ram(24'h00006, 3, 0, 16'h0000); // write context reg
-	 dut.m68010.m68k_rw_ram(24'h00004, 3, 0, 16'h0000); // write segment map (v & 0xff8000)
-	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 16'h8000); // write page map    (v & 0xfff800)
+	 dut.m68010.m68k_rw_ram(24'h00006, 3, 0, 0, 16'h0000); // write context reg
+	 dut.m68010.m68k_rw_ram(24'h00004, 3, 0, 0, 16'h0000); // write segment map (v & 0xff8000)
+	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 0, 16'h8000); // write page map    (v & 0xfff800)
 
 	 // dcp
-	 dut.m68010.m68k_rw_ram(24'h01000, 3, 0, 16'h8050); // write page map
-	 dut.m68010.m68k_rw_ram(24'h01002, 3, 0, 16'h0002); // write page map
+	 dut.m68010.m68k_rw_ram(24'h01000, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h01002, 3, 0, 0, 16'h0002); // write page map
 
 	 // port
-	 dut.m68010.m68k_rw_ram(24'h01800, 3, 0, 16'h8050); // write page map
-	 dut.m68010.m68k_rw_ram(24'h01802, 3, 0, 16'h0003); // write page map
+	 dut.m68010.m68k_rw_ram(24'h01800, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h01802, 3, 0, 0, 16'h0003); // write page map
 
 	 // scc
-	 dut.m68010.m68k_rw_ram(24'h02000, 3, 0, 16'h8050); // write page map
-	 dut.m68010.m68k_rw_ram(24'h02002, 3, 0, 16'h0004); // write page map
+	 dut.m68010.m68k_rw_ram(24'h02000, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h02002, 3, 0, 0, 16'h0004); // write page map
 
 	 // timer
-	 dut.m68010.m68k_rw_ram(24'h02800, 3, 0, 16'h8050); // write page map
-	 dut.m68010.m68k_rw_ram(24'h02802, 3, 0, 16'h0005); // write page map
+	 dut.m68010.m68k_rw_ram(24'h02800, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h02802, 3, 0, 0, 16'h0005); // write page map
 
-//	 dut.m68010.m68k_rw_ram(24'h03000, 3, 0, 16'h8050); // write page map
-//	 dut.m68010.m68k_rw_ram(24'h03002, 3, 0, 16'h0004); // write page map
+//	 dut.m68010.m68k_rw_ram(24'h03000, 3, 0, 0, 16'h8050); // write page map
+//	 dut.m68010.m68k_rw_ram(24'h03002, 3, 0, 0, 16'h0004); // write page map
 
 	 // rtc
-	 dut.m68010.m68k_rw_ram(24'h03800, 3, 0, 16'h8050); // write page map
-	 dut.m68010.m68k_rw_ram(24'h03802, 3, 0, 16'h0007); // write page map
-
-//	 $display("SETUP_PMAP3");
-//	 dut.m68010.m68k_rw_ram(24'h08004, 3, 0, 16'h0080); // write segment map
-//	 dut.m68010.m68k_rw_ram(24'h01000, 3, 0, 16'hec40); // write page map
-//	 dut.m68010.m68k_rw_ram(24'h00002, 3, 0, 16'h0000); // write page map
+	 dut.m68010.m68k_rw_ram(24'h03800, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h03802, 3, 0, 0, 16'h0007); // write page map
       end
    endtask
 
@@ -134,44 +129,45 @@ module tb();
 	 
 	 // dcp
 	 $display("r/w DCP");
-	 dut.m68010.m68k_rw_ram(24'h001000, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h001000, 5, 0, 16'h0012); // write
+	 dut.m68010.m68k_rw_ram(24'h001000, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h001000, 5, 0, 0, 16'h0012); // write
 
 	 // port
 	 $display("r/w PORT");
-	 dut.m68010.m68k_rw_ram(24'h001800, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h001800, 5, 0, 16'h0034); // write
+	 dut.m68010.m68k_rw_ram(24'h001800, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h001800, 5, 0, 0, 16'h0034); // write
 
 	 // scc
 	 $display("r/w SCC");
-	 dut.m68010.m68k_rw_ram(24'h002000, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h002000, 5, 0, 16'h0056); // write
+	 dut.m68010.m68k_rw_ram(24'h002000, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h002000, 5, 0, 0, 16'h0056); // write
 
 	 // timer
 	 $display("r/w TIMER");
-	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h002800, 5, 0, 16'h0078); // write
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 0, 0, 16'h0078); // write
 
 	 // rtc
 	 $display("r/w RTC");
-	 dut.m68010.m68k_rw_ram(24'h003800, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h003800, 5, 0, 16'h0078); // write
+	 dut.m68010.m68k_rw_ram(24'h003800, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h003800, 5, 0, 0, 16'h0078); // write
       end
    endtask
 
    task test_p2_mem;
       begin
-	 dut.m68010.m68k_rw_ram(24'h000000, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h000000, 5, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h000000, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h000000, 5, 0, 0, 16'h00a5); // write
 
-	 dut.m68010.m68k_rw_ram(24'h000004, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h000004, 5, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h000004, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h000004, 5, 0, 0, 16'h00a5); // write
 
-	 dut.m68010.m68k_rw_ram(24'h001234, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h001234, 5, 0, 16'h00a5); // write
+	 // we mapped one page, so r/w in that
+	 dut.m68010.m68k_rw_ram(24'h001234, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h001234, 5, 0, 0, 16'h00a5); // write
 
-	 dut.m68010.m68k_rw_ram(24'h005678, 5, 1, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h005678, 5, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h001020, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h001020, 5, 0, 0, 16'h5aa5); // write
       end
    endtask
 	
@@ -193,17 +189,18 @@ module tb();
 
    initial
      begin
+`ifndef cosim
 	#200 run_tests;
-	#10000 $finish;
+`endif
+	#2000000 $finish;
      end
-   
+
   initial
     begin
       $timeformat(-9, 0, "ns", 7);
       $dumpfile("sun2.vcd");
       $dumpvars(0, dut);
     end
-
 
 endmodule
 

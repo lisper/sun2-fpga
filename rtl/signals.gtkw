@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Tue Jun  6 23:42:29 2023
+[*] Tue Jun 13 11:03:10 2023
 [*]
 [dumpfile] "/files/code/git/sun2-fpga/rtl/sun2.vcd"
-[dumpfile_mtime] "Tue Jun  6 23:42:09 2023"
-[dumpfile_size] 336514
+[dumpfile_mtime] "Tue Jun 13 10:27:39 2023"
+[dumpfile_size] 17763800
 [savefile] "/files/code/git/sun2-fpga/rtl/signals.gtkw"
-[timestart] 7949
-[size] 1650 862
-[pos] -1 -1
-*-9.821261 10813 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 25540
+[size] 1651 928
+[pos] 157 25
+*-11.358680 32490 37790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.dut.
 [treeopen] tb.dut.sun2.
@@ -17,7 +17,7 @@
 [sst_width] 233
 [signals_width] 325
 [sst_expanded] 1
-[sst_vpaned_height] 498
+[sst_vpaned_height] 546
 @28
 tb.dut.sun2.C100
 tb.dut.sun2.BOOTEN_n
@@ -41,14 +41,20 @@ tb.dut.sun2.u111.Y
 -
 @28
 tb.dut.sun2.XACK
+tb.dut.sun2.IOACK
 tb.dut.sun2.IOACK_n
 tb.dut.sun2.DCPACK_n
 tb.dut.sun2.IOACK_n
 tb.dut.sun2.DCPACK_n
+tb.dut.sun2.LTYPE0
+tb.dut.sun2.LTYPE1
+tb.dut.sun2.C_S4
 @200
 -
 @22
 tb.dut.sun2.p_addr[23:0]
+tb.dut.sun2.sm_addr[11:0]
+tb.dut.sun2.pm_addr[11:0]
 @28
 tb.dut.sun2.VALID
 @22
@@ -56,9 +62,16 @@ tb.dut.sun2.u305.addr[11:0]
 tb.dut.sun2.u305.data[3:0]
 @28
 tb.dut.sun2.u305.WE_n
-tb.dut.sun2.WR_PMAP0U_n
 tb.dut.sun2.u316.dis
 tb.dut.sun2.DIS_n
+@200
+-
+@28
+tb.dut.sun2.PROTERR_n
+tb.dut.sun2.RW
+tb.dut.sun2.P_FC1
+@29
+tb.dut.sun2.P_FC2
 @200
 -
 @28
@@ -94,7 +107,6 @@ tb.dut.sun2.P_FC2
 tb.dut.sun2.P_LDS_n
 tb.dut.sun2.P_UDS_n
 tb.dut.sun2.P_RW_n
-tb.dut.sun2.RW_n
 tb.dut.sun2.P_SPROG_n
 tb.dut.sun2.P_VPA_n
 @22
@@ -160,8 +172,8 @@ tb.dut.sun2.WR_RTC_n
 -
 @22
 tb.dut.sun2.p2_addr[22:0]
+tb.dut.sun2.p2_cap_addr[22:0]
 tb.dut.sun2.p2_di[15:0]
-@23
 tb.dut.sun2.p2_do[15:0]
 @28
 tb.dut.sun2.P2_CAS_n

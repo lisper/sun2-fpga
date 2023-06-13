@@ -37,9 +37,14 @@
 `include "ttl_Z8530.v"
 
 `include "m68010_model.v"
+`include "m68010_cosim.v"
+`include "p2_ram.v"
+`include "dpram_128k.v"
+`include "p2_video.v"
+`include "p2_kb.v"
+`include "p2_intf.v"
 
 `include "sun2_ttl.v"
-
 
 module top(input clk40);
 
@@ -176,7 +181,11 @@ module top(input clk40);
 		 .P_D15(P_D15)
 		   );
 
+`ifndef cosim
    m68010_model m68010(
+`else
+   m68010_cosim m68010(
+`endif
 		 .C100(C100),
 		 .P_VPA_n(P_VPA_n),
 		 .P_BERR_n(P_BERR_n),
@@ -242,5 +251,5 @@ module top(input clk40);
 		 .P_D14(P_D14),
 		 .P_D15(P_D15)
 		   );
-
+   
 endmodule

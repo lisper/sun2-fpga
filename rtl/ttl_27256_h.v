@@ -36,19 +36,19 @@ module ttl_27256_h(input A0,
        else
 	 begin
 	    case (addr)
-`include "bootprom_h.v"
+`include "bootprom_l.v"
 	    endcase
-	     $display("bootrom_h: %x -> %x", addr, out);
+	    //$display("bootrom_h: %x -> %x", addr, out);
 	 end
      end
    
-   assign O0 = ~CE_n ? out[0] : 1'bz;
-   assign O1 = ~CE_n ? out[1] : 1'bz;
-   assign O2 = ~CE_n ? out[2] : 1'bz;
-   assign O3 = ~CE_n ? out[3] : 1'bz;
-   assign O4 = ~CE_n ? out[4] : 1'bz;
-   assign O5 = ~CE_n ? out[5] : 1'bz;
-   assign O6 = ~CE_n ? out[6] : 1'bz;
-   assign O7 = ~CE_n ? out[7] : 1'bz;
+   assign O0 = ~OE_n ? out[0] : 1'bz;
+   assign O1 = ~OE_n ? out[1] : 1'bz;
+   assign O2 = ~OE_n ? out[2] : 1'bz;
+   assign O3 = ~OE_n ? out[3] : 1'bz;
+   assign O4 = ~OE_n ? out[4] : 1'bz;
+   assign O5 = ~OE_n ? out[5] : 1'bz;
+   assign O6 = ~OE_n ? out[6] : 1'bz;
+   assign O7 = ~OE_n ? out[7] : 1'bz;
 
 endmodule

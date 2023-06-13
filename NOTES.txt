@@ -25,3 +25,17 @@ https://numato.com/docs/mimas-artix-7-fpga-development-board-with-ddr-sdram-and-
 
 good!
 https://www.ztex.de/usb-fpga-2/usb-fpga-2.13.e.html
+
+----
+
+pmap write
+
+ec40 0005
+
+ec
+111111
+54321098
+11101100
+vppppppt
+ 543210
+

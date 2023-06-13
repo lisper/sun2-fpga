@@ -1,5 +1,7 @@
+// cosimulation interface to pli code
+// allows "simulated" mc68010 to interact with rtl
 
-module m68010_model(
+module m68010_cosim(
 		    input  C100,
 		    input  P_VPA_n,
 		    input  P_BERR_n,
@@ -115,6 +117,13 @@ module m68010_model(
 
    reg [2:0]  ipl;
    reg [2:0]  fc;
+
+   wire [15:0] data_bus;
+   assign data_bus = { P_D15,P_D14,P_D13,P_D12,P_D11,P_D10,P_D9,P_D8,
+		       P_D7,P_D6,P_D5,P_D4,P_D3,P_D2,P_D1,P_D0 };
+   reg [15:0]  read_data;
+   reg [32:0]  read_data32;
+
    
 //   assign IPL2_n = ipl[2];
 //   assign IPL1_n = ipl[1];
@@ -162,10 +171,10 @@ module m68010_model(
    task m68k_rw_ram(input [23:0] _addr,
 		    input [2:0] _fc,
 		    input 	read,
-		    input 	byteop,
+		    input byteop,
                     input [15:0] w_data);
       begin
-	 $display("m68k_rw_ram(addr=%x, fc=%d)", _addr, _fc);
+	 $display("m68k_rw_ram(addr=%x, fc=%d, read=%d)", _addr, _fc, read);
 	 wait_clock_high;
 	 // S0
 	 fc = _fc;
@@ -176,7 +185,7 @@ module m68010_model(
 	 wait_clock_high;
 	 // S2
 	 AS = 1;
-	 UDS = 1;
+	 if (byteop) UDS = 0; else UDS = 1;
 	 LDS = 1;
 	 RW = 0;
 	 drive_bus = 1;
@@ -207,6 +216,8 @@ module m68010_model(
 	      wait_clock_low;
 	   end
 
+	 read_data = data_bus;
+	 
 	 wait_clock_low;
 	 wait_clock_high;
 
@@ -256,4 +267,62 @@ module m68010_model(
 	drive_addr = 0;
 	drive_bus = 0;
      end
+
+`ifdef cosim
+   reg [22:0] cosim_addr;
+   reg [31:0] cosim_data;
+   reg [2:0] cosim_fc;
+   reg [2:0] cosim_action;
+   
+   always @(posedge C100)
+     begin
+        $pli_cosim(cosim_addr, cosim_data, cosim_fc, cosim_action);
+	if (cosim_action != 0) $display("cosim: %d %x %x %d", cosim_action, cosim_addr, cosim_data, cosim_fc);
+
+	case (cosim_action)
+	  1: // byte read
+	  begin
+	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 1, 0);
+	     $display("cosim: response %x; %t", read_data, $time);
+	     $pli_cosim(0, read_data, 0, 7);
+	  end
+	  2: // word read
+	  begin
+	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
+	     $display("cosim: response %x; %t", read_data, $time);
+	     $pli_cosim(0, read_data, 0, 7);
+	  end
+	  3: // longword read
+	  begin
+	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
+	     $display("cosim: response1 %x", read_data);
+	     read_data32 = { read_data[15:0], 16'b0 };
+	     cosim_addr = cosim_addr + 23'h2;
+	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
+	     read_data32 = { read_data32[31:16], read_data[15:0] };
+	     $display("cosim: response2 %x %x", read_data, read_data32);
+	     $pli_cosim(0, read_data32, 0, 7);
+	  end
+	  4: // byte write
+	    begin
+	       $display("cosim: write-byte %x <- %x", cosim_addr, cosim_data);
+	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 1, cosim_data);
+	    end
+	  5: // word write
+	    begin
+	       $display("cosim: write-word %x <- %x", cosim_addr, cosim_data);
+	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data);
+	    end
+	  6: // longword write
+	    begin
+	       $display("cosim: write-long %x <- %x", cosim_addr, cosim_data);
+	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data >> 16);
+	       cosim_addr = cosim_addr + 23'h2;
+	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data);	     
+	    end
+	endcase
+     end
+`endif
+   
+
 endmodule

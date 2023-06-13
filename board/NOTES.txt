@@ -1,0 +1,4 @@
+textool
+264 4493
+0.1" spacing
+64 pins

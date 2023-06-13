@@ -23,7 +23,41 @@ module ttl_am9513 (inout [15:0] D,
 		   output OUT4,
 		   output OUT5);
 
-   assign D = 16'bz;
+   reg [15:0] data_out = 0;
+   reg [15:0] status_out = 0;
+   wire read, write, clk;
+   wire [15:0] bus_out;
+
+   reg [15:0] cmd = 0;
+   reg [15:0] data_in = 0;
+   
+   assign clk = X2;
+   assign read = ~RD_n & ~CS_n;
+   assign write = ~WR_n & ~CS_n;
+
+   assign bus_out = CD_n ? status_out : data_out;
+   assign D = read ? bus_out : 16'bz;
+
+   always @(posedge read) $display("am9513: read cd_n %b; bus %x D %x", CD_n, bus_out, D);
+   always @(posedge write) $display("am9513: write cd_n %b; bus %x D %x", CD_n, bus_out, D);
+
+   always @(posedge clk)
+     begin
+	status_out = 16'h0b00;
+	data_out = 16'h0b00;
+     end
+
+   always @(posedge clk)
+     if (write) begin
+	if (CD_n)
+	  begin
+	     cmd <= D;
+	  end
+	else
+	  begin
+	     data_in <= D;
+	  end
+     end
    
 endmodule
 
