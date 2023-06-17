@@ -1,12 +1,12 @@
 
 module ttl_74LS244(input A11,
-		   input  A12,
-		   input  A13,
-		   input  A14,
-		   input  A21,
-		   input  A22,
-		   input  A23,
-		   input  A24,
+		   input A12,
+		   input A13,
+		   input A14,
+		   input A21,
+		   input A22,
+		   input A23,
+		   input A24,
 		   inout Y11,
 		   inout Y12,
 		   inout Y13,
@@ -15,8 +15,8 @@ module ttl_74LS244(input A11,
 		   inout Y22,
 		   inout Y23,
 		   inout Y24,
-		   input  G1,
-		   input  G2);
+		   input G1,
+		   input G2);
 
    assign Y11 = ~G1 ? A11 : 1'bz;
    assign Y12 = ~G1 ? A12 : 1'bz;

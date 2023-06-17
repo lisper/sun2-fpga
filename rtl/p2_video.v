@@ -4,24 +4,35 @@
 // 0x0070_0000 - 0x0071_ffff
 
 module p2_video(input clk,
-	      input [22:0]  addr,
-	      input 	    decode,
-	      input 	    decode_ctl,
-	      input 	    wel_n,
-	      input 	    weu_n,
-	      input 	    go_n, 
-	      inout 	    wait_n,
-	      input [15:0]  datai,
-	      output [15:0] datao);
+	      input [22:0] addr,
+	      input 	   decode,
+	      input 	   decode_ctl,
+	      input 	   wel_n,
+	      input 	   weu_n,
+	      input 	   go_n, 
+	      inout 	   wait_n,
+	      input [15:0] datai,
+	      inout [15:0] datao);
 
-   wire we_en, en_0;
+   wire we_en, en_0, ctrl;
    assign we_en = ~wel_n & ~weu_n;
-   assign en_0 = ~go_n;
+   assign en_0 = ~go_n & decode;
+   assign ctrl = ~go_n & decode_ctl;
+   
    wire [16:0] vram_addr;
    assign vram_addr = addr[16:0];
 
-   always @(posedge we_en)
-     if (en_0) $display("video write");
+   always @(negedge we_en)
+     begin
+	if (en_0) $display("video write %x ", vram_addr);
+	if (ctrl) $display("ctrl write %x", vram_addr);
+     end
+
+   always @(negedge go_n)
+     begin
+	if (en_0 & ~we_en) $display("video read %x", vram_addr);
+	if (ctrl & ~we_en) $display("ctrl read %x", vram_addr);
+     end
    
    dpram_128k vram(.clk(clk),
 		   .wr_en(we_en),

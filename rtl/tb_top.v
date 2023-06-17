@@ -4,7 +4,8 @@
 
 module tb();
    reg clk40;
-
+   reg cpu_trace = 0;
+   
    top dut(.clk40(clk40));
 
    task test_eeprom;
@@ -156,18 +157,24 @@ module tb();
 
    task test_p2_mem;
       begin
-	 dut.m68010.m68k_rw_ram(24'h000000, 5, 1, 0, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h000000, 5, 0, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 0, 16'hfe00); // write page map
+	 dut.m68010.m68k_rw_ram(24'h00002, 3, 0, 0, 16'h0000); // write page map
 
-	 dut.m68010.m68k_rw_ram(24'h000004, 5, 1, 0, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h000004, 5, 0, 0, 16'h00a5); // write
+	 dut.m68010.m68k_rw_ram(24'h000000, 5, 0, 0, 16'h0012); // write
+	 dut.m68010.m68k_rw_ram(24'h000002, 5, 0, 0, 16'h0034); // write
+
+	 dut.m68010.m68k_rw_ram(24'h000000, 5, 1, 0, 16'h0000); // read
+	 dut.m68010.m68k_rw_ram(24'h000002, 5, 1, 0, 16'h0000); // read
+
+//	 dut.m68010.m68k_rw_ram(24'h000004, 5, 1, 0, 16'h0000); // read
+//	 dut.m68010.m68k_rw_ram(24'h000004, 5, 0, 0, 16'h00a5); // write
 
 	 // we mapped one page, so r/w in that
-	 dut.m68010.m68k_rw_ram(24'h001234, 5, 1, 0, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h001234, 5, 0, 0, 16'h00a5); // write
+//	 dut.m68010.m68k_rw_ram(24'h001234, 5, 1, 0, 16'h0000); // read
+//	 dut.m68010.m68k_rw_ram(24'h001234, 5, 0, 0, 16'h00a5); // write
 
-	 dut.m68010.m68k_rw_ram(24'h001020, 5, 1, 0, 16'h0000); // read
-	 dut.m68010.m68k_rw_ram(24'h001020, 5, 0, 0, 16'h5aa5); // write
+//	 dut.m68010.m68k_rw_ram(24'h001020, 5, 1, 0, 16'h0000); // read
+//	 dut.m68010.m68k_rw_ram(24'h001020, 5, 0, 0, 16'h5aa5); // write
       end
    endtask
 	
@@ -191,15 +198,18 @@ module tb();
      begin
 `ifndef cosim
 	#200 run_tests;
+	#5000 $finish;
 `endif
-	#2000000 $finish;
      end
 
   initial
     begin
-      $timeformat(-9, 0, "ns", 7);
-      $dumpfile("sun2.vcd");
-      $dumpvars(0, dut);
+       $timeformat(-9, 0, "ns", 7);
+       $dumpfile("sun2.vcd");
+       $dumpvars(0, dut);
+`ifdef cosim
+       #10 $dumpoff;
+`endif
     end
 
 endmodule

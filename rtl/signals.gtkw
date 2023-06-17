@@ -1,23 +1,25 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Tue Jun 13 11:03:10 2023
+[*] Thu Jun 15 12:23:55 2023
 [*]
 [dumpfile] "/files/code/git/sun2-fpga/rtl/sun2.vcd"
-[dumpfile_mtime] "Tue Jun 13 10:27:39 2023"
-[dumpfile_size] 17763800
+[dumpfile_mtime] "Thu Jun 15 12:20:51 2023"
+[dumpfile_size] 65526
 [savefile] "/files/code/git/sun2-fpga/rtl/signals.gtkw"
-[timestart] 25540
-[size] 1651 928
-[pos] 157 25
-*-11.358680 32490 37790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 341305053
+[size] 1652 894
+[pos] 30 -78
+*-7.951885 341305399 37790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.dut.
+[treeopen] tb.dut.m68010.
 [treeopen] tb.dut.sun2.
+[treeopen] tb.dut.sun2.p2_bus.
 [treeopen] tb.dut.sun2.u303.
 [sst_width] 233
 [signals_width] 325
 [sst_expanded] 1
-[sst_vpaned_height] 546
+[sst_vpaned_height] 517
 @28
 tb.dut.sun2.C100
 tb.dut.sun2.BOOTEN_n
@@ -32,11 +34,8 @@ tb.dut.sun2.VALID
 tb.dut.sun2.LTYPE0
 tb.dut.sun2.LTYPE1
 tb.dut.sun2.EN_S4
-tb.dut.sun2.C_S4
-tb.dut.sun2.C_S5
-tb.dut.sun2.u111.sel[2:0]
-tb.dut.sun2.u111.mux
-tb.dut.sun2.u111.Y
+tb.dut.sun2.P_LDS_n
+tb.dut.sun2.P_UDS_n
 @200
 -
 @28
@@ -70,7 +69,6 @@ tb.dut.sun2.DIS_n
 tb.dut.sun2.PROTERR_n
 tb.dut.sun2.RW
 tb.dut.sun2.P_FC1
-@29
 tb.dut.sun2.P_FC2
 @200
 -
@@ -113,6 +111,8 @@ tb.dut.sun2.P_VPA_n
 tb.dut.sun2.iodata[15:0]
 tb.dut.sun2.p_addr[23:0]
 tb.dut.sun2.p_databus_in[15:0]
+@23
+tb.dut.m68010.state[3:0]
 @28
 tb.dut.sun2.C_S3
 tb.dut.sun2.C_S4
@@ -168,21 +168,33 @@ tb.dut.sun2.RD_TIMER_n
 tb.dut.sun2.WR_TIMER_n
 tb.dut.sun2.RD_RTC_n
 tb.dut.sun2.WR_RTC_n
+tb.dut.sun2.rom_oe_n
+@22
+tb.dut.sun2.u407.addr[14:0]
 @200
 -
+@28
+tb.dut.sun2.P_AS_n
 @22
+tb.dut.sun2.p_addr[23:0]
 tb.dut.sun2.p2_addr[22:0]
 tb.dut.sun2.p2_cap_addr[22:0]
 tb.dut.sun2.p2_di[15:0]
 tb.dut.sun2.p2_do[15:0]
 @28
-tb.dut.sun2.P2_CAS_n
+tb.dut.sun2.C100
+tb.dut.sun2.C100_n
+tb.dut.sun2.C_S3_n
+tb.dut.sun2.DS_n
+tb.dut.sun2.go_n
 tb.dut.sun2.P2_RAS_n
+tb.dut.sun2.P2_CAS_n
 tb.dut.sun2.P2_REFR_n
 tb.dut.sun2.P2_RW_n
 tb.dut.sun2.P2_WAIT_n
 tb.dut.sun2.P2_WEL_n
 tb.dut.sun2.P2_WEU_n
+tb.dut.sun2.p2_bus.go_n
 @200
 -
 @22

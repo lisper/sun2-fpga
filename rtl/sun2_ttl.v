@@ -79,8 +79,8 @@
 		   inout  P_D15
 		   );
 
-    wire [15:0] p_databus_in;
-    assign p_databus_in = { P_D15, P_D14, P_D13, P_D12, P_D11, P_D10, P_D9, P_D8,
+    wire [15:0] p_databus;
+    assign p_databus = { P_D15, P_D14, P_D13, P_D12, P_D11, P_D10, P_D9, P_D8,
 			    P_D7, P_D6, P_D5, P_D4, P_D3, P_D2, P_D1, P_D0 };
 
     wire [23:0] p_addr;
@@ -170,7 +170,7 @@
 
    // -------------------------
 //   wire [15:0] IOD;
-//   assign IOD = p_databus_in;
+//   assign IOD = p_databus;
 
 assign AS = ~P_AS_n;
    assign Q_AS_n = ~AS;
@@ -604,8 +604,8 @@ wire XEN_n = 1'b1;
    wire [22:0] ia_addr;
    assign ia_addr = { IA22,IA21,IA20,IA19,IA18,IA17,IA16, 16'b0 };
    
-   always @(posedge C_S5) $display("ia_addr %x", ia_addr);
-   always @(posedge C_S5) $display("map_addr %x", map_addr);
+   //always @(posedge C_S5) $display("ia_addr %x", ia_addr);
+   //always @(posedge C_S5) $display("map_addr %x", map_addr);
    
    ttl_2168_sram u307(
 		      .A0(P_A11),
@@ -906,14 +906,22 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7(WR_CXU_n));
 
+   always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert; addr %x data %x", p_addr, p_databus);
+   always @(negedge WR_PMAP1L_n) $display("WR_PMAP1L_n assert; addr %x data %x", p_addr, p_databus);
+
+   always @(negedge RD_PMAP0L_n) $display("RD_PMAP0L_n assert; addr %x data %x", p_addr, p_databus);
+   always @(negedge RD_PMAP1L_n) $display("RD_PMAP1L_n assert; addr %x data %x", p_addr, p_databus);
+   
+`ifdef xx
    always @(negedge WR_SMAP_n) $display("WR_SMAP_n assert");
    always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert");
-   always @(negedge WR_PMAP1L_n) $display("WR_PMA10L_n assert");
+   always @(negedge WR_PMAP1L_n) $display("WR_PMAP1L_n assert");
    always @(negedge WR_PMAP0U_n) $display("WR_PMAP0U_n assert");
-   always @(negedge WR_PMAP1U_n) $display("WR_PMAP0U_n assert");
+   always @(negedge WR_PMAP1U_n) $display("WR_PMAP1U_n assert");
    always @(negedge WR_CXL_n) $display("WR_CXL_n assert");
    always @(negedge WR_CXU_n) $display("WR_CXU_n assert");
-
+`endif
+   
    ttl_74F138 u324(.A0(P_A1),
 		   .A1(P_A2),
 		   .A2(RW),
@@ -936,8 +944,8 @@ wire XEN_n = 1'b1;
 
    // -------------------
 
-   always @(negedge RD_RAM_n) $display("RD_RAM_n assert");
-   always @(negedge WR_RAM_n) $display("WR_RAM_n assert");
+   always @(negedge RD_RAM_n) $display("RD_RAM_n assert; addr %x data %x", p_addr, p_databus);
+   always @(negedge WR_RAM_n) $display("WR_RAM_n assert; addr %x data %x", p_addr, p_databus);
 
    // Strobe Decoders
    ttl_74F138 U400(.A0(LTYPE0),
@@ -974,8 +982,8 @@ wire XEN_n = 1'b1;
    always @(negedge RD_PORT_n) $display("RD_PORT_n asserts");
    always @(negedge RD_SCC_n) $display("RD_SCC_n asserts");
    always @(negedge RD_TIMER_n) $display("RD_TIMER_n asserts");
-   always @(negedge RD_PROM_n) $display("RD_PROM_n asserts");
-   always @(negedge RD_IO_n) $display("RD_IO_n asserts");
+//   always @(negedge RD_PROM_n) $display("RD_PROM_n asserts");
+//   always @(negedge RD_IO_n) $display("RD_IO_n asserts");
    
 
    ttl_74F138 u402(.A0(MA11),
@@ -1037,7 +1045,7 @@ wire XEN_n = 1'b1;
 		    .O5(IOD5),
 		    .O6(IOD6),
 		    .O7(IOD7),
-		    .OE_n(rom_oe),
+		    .OE_n(rom_oe_n),
 		    .CE_n(1'b0));
 
    ttl_27256_h u407(.A0(P_A1),
@@ -1063,12 +1071,12 @@ wire XEN_n = 1'b1;
 		    .O5(IOD13),
 		    .O6(IOD14),
 		    .O7(IOD15),
-		    .OE_n(rom_oe),
+		    .OE_n(rom_oe_n),
 		    .CE_n(1'b0));
 
    wire BOOTEN_n;
    assign BOOTEN_n = ~(~BOOT_n & ~P_SPROG_n);
-   assign rom_oe = ~(~RD_PROM_n | ~BOOTEN_n);
+   assign rom_oe_n = ~(~RD_PROM_n | ~BOOTEN_n);
 
    // Real time clock
 `ifdef xx
@@ -1179,17 +1187,26 @@ wire XEN_n = 1'b1;
 
    // P2 Bus interface
    wire [15:0] p2_do;
-   assign p2_do = { P2_DO15, P2_DO14, P2_DO13, P2_DO12, P2_DO11, P2_DO10, P2_DO9, P2_DO8,
-		    P2_DO7, P2_DO6, P2_DO5, P2_DO4, P2_DO3, P2_DO2, P2_DO1, P2_DO0 };
+   assign P2_DO15 = p2_do[15];
+   assign P2_DO14 = p2_do[14];
+   assign P2_DO13 = p2_do[13];
+   assign P2_DO12 = p2_do[12];
+   assign P2_DO11 = p2_do[11];
+   assign P2_DO10 = p2_do[10];
+   assign P2_DO9 = p2_do[9];
+   assign P2_DO8 = p2_do[8];
+   assign P2_DO7 = p2_do[7];
+   assign P2_DO6 = p2_do[6];
+   assign P2_DO5 = p2_do[5];
+   assign P2_DO4 = p2_do[4];
+   assign P2_DO3 = p2_do[3];
+   assign P2_DO2 = p2_do[2];
+   assign P2_DO1 = p2_do[1];
+   assign P2_DO0 = p2_do[0];
 
    wire [15:0] p2_di;
    assign p2_di = { P2_DI15, P2_DI14, P2_DI13, P2_DI12, P2_DI11, P2_DI10, P2_DI9, P2_DI8,
 		    P2_DI7, P2_DI6, P2_DI5, P2_DI4, P2_DI3, P2_DI2, P2_DI1, P2_DI0 };
-   
-   wire [22:0] p2_addr;
-   assign p2_addr = {         P2_A22, P2_A21, P2_A20, P2_A19, P2_A18,   1'b0,   1'b0,
-                        1'b0,   1'b0,   1'b0,   1'b0,   1'b0,   1'b0, P2_A09, P2_A08,
-		      P2_A07, P2_A06, P2_A05, P2_A04, P2_A03, P2_A02, P2_A01, 1'b0 };
    
    ttl_74LS244 u500(.A11(P_A1),
 		   .A12(P_A2),
@@ -1210,25 +1227,6 @@ wire XEN_n = 1'b1;
 		   .G1(C_S3),
 		   .G2(C_S3));
 
-   ttl_74LS244 u504(.A11(P_D1),
-		    .A12(P_D0),
-		    .A13(P_D2),
-		    .A14(P_D3),
-		    .A21(P2_DO3),
-		    .A22(P2_DO2),
-		    .A23(P2_DO0),
-		    .A24(P2_DO1),
-		   .Y11(P2_DI1),
-		   .Y12(P2_DI0),
-		   .Y13(P2_DI2),
-		   .Y14(P2_DI3),
-		   .Y21(P_D3),
-		   .Y22(P_D2),
-		   .Y23(P_D0),
-		   .Y24(P_D1),
-		   .G1(P2_RW_n),
-		   .G2(RD_RAM_n));
-
    ttl_74LS244 u501(.A11(MA17),
 		   .A12(P_A10),
 		   .A13(MA11),
@@ -1247,6 +1245,25 @@ wire XEN_n = 1'b1;
 		   .Y24(P2_A08),
 		   .G1(C_S3_n),
 		   .G2(C_S3_n));
+
+   ttl_74LS244 u504(.A11(P_D1),
+		    .A12(P_D0),
+		    .A13(P_D2),
+		    .A14(P_D3),
+		    .A21(P2_DO3),
+		    .A22(P2_DO2),
+		    .A23(P2_DO0),
+		    .A24(P2_DO1),
+		   .Y11(P2_DI1),
+		   .Y12(P2_DI0),
+		   .Y13(P2_DI2),
+		   .Y14(P2_DI3),
+		   .Y21(P_D3),
+		   .Y22(P_D2),
+		   .Y23(P_D0),
+		   .Y24(P_D1),
+		   .G1(P2_RW_n),
+		   .G2(RD_RAM_n));
 
    ttl_74LS244 u505(.A11(P_D7),
 		   .A12(P_D6),
@@ -1735,7 +1752,7 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 
    always @(posedge WR_DIAG_n or negedge P_RESET_n)
      if (WR_DIAG_n)
-       diag_reg <= p_databus_in;
+       diag_reg <= p_databus;
      else
        if (~P_RESET_n)
 	 diag_reg <= 8'b0;
@@ -1747,9 +1764,14 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 
    // -------------------
 
-   reg [22:0]  p2_cap_addr;
+   reg [22:0]  p2_cap_addr = 0;
 
-   always @(posedge C100)
+   wire [22:0] p2_addr;
+   assign p2_addr = { P2_A22, P2_A21, P2_A20, P2_A19, P2_A18,   1'b0,   1'b0,
+                        1'b0,   1'b0,   1'b0,   1'b0,   1'b0,   1'b0, P2_A09, P2_A08,
+		      P2_A07, P2_A06, P2_A05, P2_A04, P2_A03, P2_A02, P2_A01, 1'b0    };
+   
+   always @(posedge C100_n)
      if (C_S3_n & ~P2_RAS_n)
        begin
 	  p2_cap_addr[9:0] <= { P2_A09, P2_A08,
@@ -1757,7 +1779,8 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 				P2_A03, P2_A02, P2_A01, 1'b0 };
 	  p2_cap_addr[22:18] <= { P2_A22, P2_A21, P2_A20, P2_A19, P2_A18 };
        end
-     else
+
+   always @(posedge C100)
        if (~C_S3_n & ~P2_CAS_n)
 	 begin
 	    p2_cap_addr[17] <= P2_A01;
@@ -1770,16 +1793,19 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 	    p2_cap_addr[16] <= P2_A08;
 	 end
 
-   p2_intf p2_bus(.clk(C100),
+   wire go_n;
+   assign go_n = ~(~RD_RAM_n | ~WR_RAM_n);
+   
+   p2_intf p2_bus(.clk(C100_n),
 		  .addr(p2_cap_addr),
 		  .ras_n(P2_RAS_n),
 		  .cas_n(P2_CAS_n),
 		  .wel_n(P2_WEL_n),
 		  .weu_n(P2_WEU_n),
 		  .rw_n(P2_RW_n),
-		  .go_n(~C_S7),
+		  .go_n(go_n),
 		  .wait_n(P2_WAIT_n),
-		  .datao(p2_do),
-		  .datai(p2_di));
+		  .datai(p2_di),
+		  .datao(p2_do));
 		       
 endmodule

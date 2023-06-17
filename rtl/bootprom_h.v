@@ -1470,7 +1470,8 @@
     15'h05bd: out = 8'h0b;
     15'h05be: out = 8'h3c;
     15'h05bf: out = 8'h00;
-    15'h05c0: out = 8'h50;
+//    15'h05c0: out = 8'h50;
+15'h05c0: out = 8'h03;
     15'h05c1: out = 8'h80;
     15'h05c2: out = 8'h00;
     15'h05c3: out = 8'hfc;

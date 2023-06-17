@@ -34,6 +34,7 @@ int rw_read = 0;
 unsigned rw_write = 0;
 pthread_cond_t rw_cond  = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t rw_mutex = PTHREAD_MUTEX_INITIALIZER;
+int cpu_trace = 0;
 
 enum {
     S_RAW = 0,
@@ -97,44 +98,45 @@ static void rw_wait(int _size, unsigned addr, unsigned value, int is_read)
 
 unsigned int m68k_read_memory_8(unsigned int address)
 {
-    printf("entry m68k_read_memory_8(%08x)\n", address);
+    //printf("entry m68k_read_memory_8(%08x)\n", address);
     rw_wait(1, address, 0, 1);
+    if (cpu_trace) printf("exit m68k_read_memory_8(%08x) %04x\n", address, rw_value);
     return rw_value;
 }
 
 unsigned int m68k_read_memory_16(unsigned int address)
 {
-    printf("entry m68k_read_memory_16(%08x)\n", address);
+    if (cpu_trace) printf("entry m68k_read_memory_16(%08x)\n", address);
     rw_wait(2, address, 0, 1);
-    printf("exit m68k_read_memory_16(%08x) %04x\n", address, rw_value);
+    if (cpu_trace) printf("exit m68k_read_memory_16(%08x) %04x\n", address, rw_value);
     return rw_value;
 }
 
 unsigned int m68k_read_memory_32(unsigned int address)
 {
-    printf("entry m68k_read_memory_32(%08x)\n", address);
+    if (cpu_trace) printf("entry m68k_read_memory_32(%08x)\n", address);
     rw_wait(4, address, 0, 1);
-    printf("exit m68k_read_memory_32(%08x) %08x\n", address, rw_value);
+    if (cpu_trace) printf("exit m68k_read_memory_32(%08x) %08x\n", address, rw_value);
     return rw_value;
 }
 
 void m68k_write_memory_8(unsigned int address, unsigned int value)
 {
-    dump_cpu();
-    printf("entry m68k_write_memory_8(%08x) %02x\n", address, value);
+    //dump_cpu();
+    //printf("entry m68k_write_memory_8(%08x) %02x\n", address, value);
     rw_wait(1, address, value, 0);
 }
 
 void m68k_write_memory_16(unsigned int address, unsigned int value)
 {
-    dump_cpu();
-    printf("entry m68k_write_memory_16(%08x) %04x\n", address, value);
+    //dump_cpu();
+    //printf("entry m68k_write_memory_16(%08x) %04x\n", address, value);
     rw_wait(2, address, value, 0);
 }
 
 void m68k_write_memory_32(unsigned int address, unsigned int value)
 {
-    printf("entry m68k_write_memory_32(%08x) %08x\n", address, value);
+    //printf("entry m68k_write_memory_32(%08x) %08x\n", address, value);
     rw_wait(4, address, value, 0);
 }
 
@@ -144,7 +146,37 @@ void set_fc_handler_function(int fc)
 {
     g_fc = fc;
 }
-    
+
+void trace_all()
+{
+//  unsigned int pc;
+//  char buf[256];
+//  pc = m68k_get_reg(NULL, M68K_REG_PC);
+//  m68k_disassemble(buf, pc, M68K_CPU_TYPE_68010); 
+
+  printf("\n");
+  printf("PC %06x sr %04x usp %06x isp %06x sp %06x\n",
+	 m68k_get_reg(NULL, M68K_REG_PC),
+	 m68k_get_reg(NULL, M68K_REG_SR),
+	 m68k_get_reg(NULL, M68K_REG_USP),
+	 m68k_get_reg(NULL, M68K_REG_ISP),
+	 m68k_get_reg(NULL, M68K_REG_SP));
+
+//  printf("%s\n", buf);
+
+  printf("A0:%08x A1:%08x A2:%08x A3:%08x A4:%08x A5:%08x A6:%08x A7:%08x\n",
+	 m68k_get_reg(NULL, M68K_REG_A0), m68k_get_reg(NULL, M68K_REG_A1),
+	 m68k_get_reg(NULL, M68K_REG_A2), m68k_get_reg(NULL, M68K_REG_A3),
+	 m68k_get_reg(NULL, M68K_REG_A4), m68k_get_reg(NULL, M68K_REG_A5),
+	 m68k_get_reg(NULL, M68K_REG_A6), m68k_get_reg(NULL, M68K_REG_A7));
+
+  printf("D0:%08x D1:%08x D2:%08x D3:%08x D4:%08x D5:%08x D6:%08x D7:%08x\n",
+	  m68k_get_reg(NULL, M68K_REG_D0), m68k_get_reg(NULL, M68K_REG_D1),
+	  m68k_get_reg(NULL, M68K_REG_D2), m68k_get_reg(NULL, M68K_REG_D3),
+	  m68k_get_reg(NULL, M68K_REG_D4), m68k_get_reg(NULL, M68K_REG_D5),
+	  m68k_get_reg(NULL, M68K_REG_D6), m68k_get_reg(NULL, M68K_REG_D7));
+}
+
 void *thread_start(void *arg)
 {
     //printf("entry thread_start()\n");
@@ -154,6 +186,7 @@ void *thread_start(void *arg)
 
     while (1) {
         //printf("thread: calling m68k_execute\n");
+        if (cpu_trace) trace_all();
         m68k_execute(1);
         //printf("thread: backfrom m68k_execute\n");
     }
@@ -168,11 +201,11 @@ static void init()
     int ret;
     if (_init) return;
     
-    printf("enter init; calling pthread_create\n");
+    //printf("enter init; calling pthread_create\n");
     ret = pthread_create(&thread, NULL, thread_start, NULL);
     if (ret) perror("pthread_create");
     usleep(1000);
-    printf("exit init\n");
+    //printf("exit init\n");
     _init = 1;
 }
 
@@ -180,7 +213,8 @@ void finish()
 {
     int ret;
     ret = pthread_join(thread, NULL);
-    printf("ret %d\n", ret);
+    //printf("ret %d\n", ret);
+    (void)ret;
 }
 
 
@@ -337,7 +371,8 @@ PLI_INT32 pli_cosim(void)
         mhref = vpi_handle(vpiModule, mhref); 
 
 //    inst_id = getadd_inst_id(mhref);
-
+    (void)inst_id;
+    
     iter = vpi_iterate(vpiArgument, href);
 
     numargs = vpi_get(vpiSize, iter);
@@ -373,7 +408,8 @@ PLI_INT32 pli_cosim(void)
     tmpval.format = vpiIntVal; 
     vpi_get_value(addrref, &tmpval);
     addr = tmpval.value.integer;
-
+    (void)addr;
+    
     tmpval.format = vpiIntVal; 
     vpi_get_value(dataref, &tmpval);
     data = tmpval.value.integer;
@@ -382,10 +418,15 @@ PLI_INT32 pli_cosim(void)
     vpi_get_value(actionref, &tmpval);
     action = tmpval.value.integer;
 
-    if (action >= 4) {
-        vpi_printf("pli_cosim() finish rw\n");
+    if (action >= 4 && action < 10) {
+        if (cpu_trace) vpi_printf("pli_cosim() finish rw; %x\n", data);
         rw_value = data;
         finish_rw();
+    }
+
+    if (action == 10) {
+        vpi_printf("pli_cosim() trace %d\n", data);
+        cpu_trace = data;
     }
     
     run_sm();
@@ -441,7 +482,7 @@ PLI_INT32 pli_cosim(void)
         break;
     }
 
-    if (action) vpi_printf("pli_cosim() action %d, fc %d\n", action, g_fc);
+    //if (action) vpi_printf("pli_cosim() action %d, fc %d\n", action, g_fc);
     
     outval.format = vpiIntVal;
     outval.value.integer = rw_addr;

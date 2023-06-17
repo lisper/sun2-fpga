@@ -116,6 +116,13 @@ module m68010_model(
    reg [2:0]  ipl;
    reg [2:0]  fc;
    
+   wire [15:0] data_bus;
+   assign data_bus = { P_D15,P_D14,P_D13,P_D12,P_D11,P_D10,P_D9,P_D8,
+		       P_D7,P_D6,P_D5,P_D4,P_D3,P_D2,P_D1,P_D0 };
+   reg [15:0]  read_data;
+   reg [32:0]  read_data32;
+
+   
 //   assign IPL2_n = ipl[2];
 //   assign IPL1_n = ipl[1];
 //   assign IPL0_n = ipl[0];
@@ -145,6 +152,8 @@ module m68010_model(
    assign P_LDS_n = drive_bus ? ~LDS : 1'bz;
    assign P_BG_n  = drive_bus ? ~BG : 1'bz;
 
+   reg [3:0] state;
+   
    task wait_clock_high;
       while (~C100)
 	begin
@@ -166,6 +175,7 @@ module m68010_model(
                     input [15:0] w_data);
       begin
 	 $display("m68k_rw_ram(addr=%x, fc=%d)", _addr, _fc);
+`ifdef old_way
 	 wait_clock_high;
 	 // S0
 	 fc = _fc;
@@ -202,7 +212,6 @@ module m68010_model(
 	 // S6
 	 while (P_DTACK_n)
 	   begin
-//	      #1;
 	      wait_clock_high;
 	      wait_clock_low;
 	   end
@@ -220,7 +229,6 @@ module m68010_model(
 
 	 while (~P_DTACK_n)
 	   begin
-//	      #1;
 	      wait_clock_low;
 	      wait_clock_high;
 	   end
@@ -230,6 +238,72 @@ module m68010_model(
 
 	 //
 	 #1 drive_data = 0;
+`else // !`ifdef old_way
+	 wait_clock_high;
+	 // S0
+	 state = 0;
+	 fc = _fc;
+	 addr = _addr;
+	 wait_clock_low;
+
+	 // S1
+	 state = 1;
+	 wait_clock_high;
+
+	 // S2
+	 state = 2;
+	 if (byteop) UDS = 0; else UDS = 1;
+	 AS = 1;
+	 LDS = 1;
+	 RW = 0;
+	 drive_bus = 1;
+	 wait_clock_low;
+
+	 // S3
+	 state = 3;
+	 if (read)
+	   begin
+	      drive_data = 0;
+	      RW = 0;
+	   end
+	 else
+	   begin
+	      drive_data = 1;
+	      RW = 1;
+	      data = w_data;
+	   end
+	 drive_addr = 1;
+	 wait_clock_high;
+
+	 // S4
+	 state = 4;
+	 wait_clock_low;
+
+	 // S5
+	 state = 5;
+	 wait_clock_high;
+
+	 // S6
+	 state = 6;
+	 while (P_DTACK_n)
+	   begin
+	      wait_clock_low;
+	      wait_clock_high;
+	   end
+
+	 read_data = data_bus;
+	 wait_clock_low;
+
+	 // S7
+	 state = 7;
+	 wait_clock_high;
+
+	 AS = 0;
+	 UDS = 0;
+	 LDS = 0;
+
+	 #10 drive_data = 0;
+`endif
 	 $display("m68k_rw_ram(addr=%x, fc=%d) done", _addr, _fc);
       end
    endtask

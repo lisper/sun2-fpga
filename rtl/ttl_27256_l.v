@@ -38,6 +38,7 @@ module ttl_27256_l(input A0,
 	     case (addr)
 //decoded backward
 `include "bootprom_h.v"
+	       default: out = 8'hff;
 	     endcase
 	     //$display("bootrom_l: %x -> %x", addr, out);
 	  end

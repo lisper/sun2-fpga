@@ -30,11 +30,13 @@ module ttl_74F251(
 	       sel == 6 ? D6 :
 	       D7;
 
+`ifdef xx
    always @(sel or D0 or D1 or D2 or D3 or D4 or D5 or D6 or D7 or mux or A or B or C)
      begin
 	$display("74f251; sel %b, mux %x, ABC %b%b%b D %b%b%b",
 		 sel, mux, A, B, C, D5, D6, D7);
      end
+`endif
    
    assign Y = ~G_n ? ~mux : 1'bz;
    assign W = ~G_n ? mux : 1'bz;
