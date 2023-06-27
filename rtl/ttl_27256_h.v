@@ -36,10 +36,11 @@ module ttl_27256_h(input A0,
        else
 	 begin
 	    case (addr)
-`include "bootprom_l.v"
-	       default: out = 8'hff;
+//`include "bootprom_h.v"
+`include "bootprom_patched_h.v"
+	       default: out = 8'h00;
 	    endcase
-	    //$display("bootrom_h: %x -> %x", addr, out);
+	    //if (tb.cpu_trace) $display("bootrom_h: %x -> %x", addr, out);
 	 end
      end
    

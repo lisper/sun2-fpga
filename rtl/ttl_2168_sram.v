@@ -43,12 +43,13 @@ module ttl_2168_sram(
    always @(addr or WE_n or CE_n)
      begin
 	if (~WE_n) begin
+
 	   ram[addr] = { D3, D2, D1, D0 };
 	   //$display("ram u30%x [%x] <- %x; %t", id, addr, { D3,D2,D1,D0 }, $time); 
 	end
 
 	if (~CE_n & WE_n) begin
-	   //$display("ram u30%x [%x] -> %x; %t", id, addr, { data[3],data[2],data[1],data[0] }, $time); 
+	   //$display("ram u30%x [%x] -> %x; %t", id, addr, data, $time); 
 	end
      end
    

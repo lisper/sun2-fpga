@@ -31,6 +31,24 @@ module ttl_Z8530 (inout [7:0] D,
 		  output DCD_n,
 		  output DSRN_n);
 
+   wire clk;
+   assign clk = PCLK;
+
+   wire [1:0] addr;
+   assign addr = { AB_n, DC_n };
+   
+   always @(posedge clk)
+     if (~RD_n)
+       begin
+	  $display("scc: read %d", addr);
+       end
+   
+   always @(posedge clk)
+     if (~WR_n)
+       begin
+	  $display("scc: write %d", addr);
+       end
+   
    assign D = 8'bz;
    
 endmodule

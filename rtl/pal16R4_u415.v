@@ -81,25 +81,25 @@ module pal16R4_u415 (input D0,
 `ifdef xx	
         IQ0 <= ~(~CS5 +                                   // reset
 		 CS5 *  IQ0 * ~IOACK +                    // toggle
-		 CS5 * ~IQ0 *  IOACK);                     // hold at eleven
+		 CS5 * ~IQ0 *  IOACK);                    // hold at eleven
 
         IQ1 <= ~(~CS5 +                                   // reset
 		 CS5 * ~IQ1 * ~IQ0 +                      // hold
 		 CS5 *  IQ1 *  IQ0 * ~IOACK +             // toggle
-		 CS5 * ~IQ1 *  IOACK);                     // hold at eleven
+		 CS5 * ~IQ1 *  IOACK);                    // hold at eleven
 
         IQ2 <= ~(~CS5 +                                   // reset
 		 CS5 * ~IQ2 * ~IQ0 +                      // hold
 		 CS5 * ~IQ2 * ~IQ1 +                      // hold
 		 CS5 *  IQ2 *  IQ1 *  IQ0 * ~IOACK +      // toggle
-		 CS5 * ~IQ2 *  IOACK);                     // hold at eleven
+		 CS5 * ~IQ2 *  IOACK);                    // hold at eleven
 
         IQ3 <= ~(~CS5 +                                   // reset
 		 CS5 * ~IQ3 * ~IQ0 +                      // hold
 		 CS5 * ~IQ3 * ~IQ1 +                      // hold
 		 CS5 * ~IQ3 * ~IQ2 +                      // hold
 		 CS5 *  IQ3 *  IQ2 * IQ1 * IQ0 * ~IOACK + // toggle
-		 CS5 * ~IQ3 *  IOACK);                     // hold at eleven
+		 CS5 * ~IQ3 *  IOACK);                    // hold at eleven
 `endif
      end
    

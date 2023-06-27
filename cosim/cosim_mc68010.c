@@ -50,7 +50,7 @@ void dump_cpu()
 #if 1
     vpi_printf("PC %06x sr %04x usp %06x isp %06x sp %06x\n",
                m68k_get_reg(NULL, M68K_REG_PC),
-               m68k_get_reg(NULL, M68K_REG_SR),
+              m68k_get_reg(NULL, M68K_REG_SR),
                m68k_get_reg(NULL, M68K_REG_USP),
                m68k_get_reg(NULL, M68K_REG_ISP),
                m68k_get_reg(NULL, M68K_REG_SP));
@@ -95,28 +95,42 @@ static void rw_wait(int _size, unsigned addr, unsigned value, int is_read)
     if (rc) perror("pthread_mutex_unlock");
 }
 
+void cpu_progress()
+{
+#if 0
+    static int delay = 0;
+    if (++delay > 5000) {
+        delay = 0;
+        dump_cpu();
+        fflush(stdout);
+    }
+#endif
+}
 
 unsigned int m68k_read_memory_8(unsigned int address)
 {
+    cpu_progress();
     //printf("entry m68k_read_memory_8(%08x)\n", address);
     rw_wait(1, address, 0, 1);
-    if (cpu_trace) printf("exit m68k_read_memory_8(%08x) %04x\n", address, rw_value);
+//    if (cpu_trace) printf("exit m68k_read_memory_8(%08x) %04x\n", address, rw_value);
     return rw_value;
 }
 
 unsigned int m68k_read_memory_16(unsigned int address)
 {
-    if (cpu_trace) printf("entry m68k_read_memory_16(%08x)\n", address);
+    cpu_progress();
+//    if (cpu_trace) printf("entry m68k_read_memory_16(%08x)\n", address);
     rw_wait(2, address, 0, 1);
-    if (cpu_trace) printf("exit m68k_read_memory_16(%08x) %04x\n", address, rw_value);
+//    if (cpu_trace) printf("exit m68k_read_memory_16(%08x) %04x\n", address, rw_value);
     return rw_value;
 }
 
 unsigned int m68k_read_memory_32(unsigned int address)
 {
-    if (cpu_trace) printf("entry m68k_read_memory_32(%08x)\n", address);
+    cpu_progress();
+//    if (cpu_trace) printf("entry m68k_read_memory_32(%08x)\n", address);
     rw_wait(4, address, 0, 1);
-    if (cpu_trace) printf("exit m68k_read_memory_32(%08x) %08x\n", address, rw_value);
+//    if (cpu_trace) printf("exit m68k_read_memory_32(%08x) %08x\n", address, rw_value);
     return rw_value;
 }
 
@@ -164,17 +178,17 @@ void trace_all()
 
 //  printf("%s\n", buf);
 
-  printf("A0:%08x A1:%08x A2:%08x A3:%08x A4:%08x A5:%08x A6:%08x A7:%08x\n",
-	 m68k_get_reg(NULL, M68K_REG_A0), m68k_get_reg(NULL, M68K_REG_A1),
-	 m68k_get_reg(NULL, M68K_REG_A2), m68k_get_reg(NULL, M68K_REG_A3),
-	 m68k_get_reg(NULL, M68K_REG_A4), m68k_get_reg(NULL, M68K_REG_A5),
-	 m68k_get_reg(NULL, M68K_REG_A6), m68k_get_reg(NULL, M68K_REG_A7));
-
   printf("D0:%08x D1:%08x D2:%08x D3:%08x D4:%08x D5:%08x D6:%08x D7:%08x\n",
 	  m68k_get_reg(NULL, M68K_REG_D0), m68k_get_reg(NULL, M68K_REG_D1),
 	  m68k_get_reg(NULL, M68K_REG_D2), m68k_get_reg(NULL, M68K_REG_D3),
 	  m68k_get_reg(NULL, M68K_REG_D4), m68k_get_reg(NULL, M68K_REG_D5),
 	  m68k_get_reg(NULL, M68K_REG_D6), m68k_get_reg(NULL, M68K_REG_D7));
+
+  printf("A0:%08x A1:%08x A2:%08x A3:%08x A4:%08x A5:%08x A6:%08x A7:%08x\n",
+	 m68k_get_reg(NULL, M68K_REG_A0), m68k_get_reg(NULL, M68K_REG_A1),
+	 m68k_get_reg(NULL, M68K_REG_A2), m68k_get_reg(NULL, M68K_REG_A3),
+	 m68k_get_reg(NULL, M68K_REG_A4), m68k_get_reg(NULL, M68K_REG_A5),
+	 m68k_get_reg(NULL, M68K_REG_A6), m68k_get_reg(NULL, M68K_REG_A7));
 }
 
 void *thread_start(void *arg)
@@ -291,62 +305,64 @@ static int getadd_inst_id(vpiHandle mhref)
 #endif
 
 #ifndef __TEST__
+#if 0
 static vpiHandle get_vpi_driver(vpiHandle wref)
 {
- int wtyp, drvtyp;
- vpiHandle drviter, drvref, parref;
- s_vpi_value tmpval;
- char sval[1024], s1[1024];
+    int wtyp, drvtyp;
+    vpiHandle drviter, drvref, parref;
+    s_vpi_value tmpval;
+    char sval[1024], s1[1024];
  
- /* need to provide string storage for get value */
- tmpval.value.str = sval;
+    /* need to provide string storage for get value */
+    tmpval.value.str = sval;
 
- wtyp = vpi_get(vpiType, wref);
- drviter = vpi_iterate(vpiDriver, wref);
- for (;;)
-  {
-   if ((drvref = vpi_scan(drviter)) == NULL) break;
-
-   drvtyp = vpi_get(vpiType, drvref);
-   if (wtyp == vpiNetBit)
+    wtyp = vpi_get(vpiType, wref);
+    drviter = vpi_iterate(vpiDriver, wref);
+    for (;;)
     {
-     if (drvtyp != vpiNetBitDriver) continue;
-     parref = vpi_handle(vpiParent, drvref); 
-     if (vpi_compare_objects(wref, parref))
-      {
-       strcpy(s1, vpi_get_str(vpiType, drvref));
-       tmpval.format = vpiBinStrVal; 
-       vpi_get_value(drvref, &tmpval);
-       vpi_printf("reusing %s bit driver of %s current value %s.\n",
-        s1, vpi_get_str(vpiFullName, parref), tmpval.value.str);
+        if ((drvref = vpi_scan(drviter)) == NULL) break;
 
-       return(drvref);
-      }
-    }
-   else if (wtyp == vpiNet)
-    {
-     if (drvtyp != vpiNetDriver) continue;
+        drvtyp = vpi_get(vpiType, drvref);
+        if (wtyp == vpiNetBit)
+        {
+            if (drvtyp != vpiNetBitDriver) continue;
+            parref = vpi_handle(vpiParent, drvref); 
+            if (vpi_compare_objects(wref, parref))
+            {
+                strcpy(s1, vpi_get_str(vpiType, drvref));
+                tmpval.format = vpiBinStrVal; 
+                vpi_get_value(drvref, &tmpval);
+                vpi_printf("reusing %s bit driver of %s current value %s.\n",
+                           s1, vpi_get_str(vpiFullName, parref), tmpval.value.str);
 
-     strcpy(s1, vpi_get_str(vpiType, drvref));
-     tmpval.format = vpiBinStrVal; 
-     vpi_get_value(drvref, &tmpval);
-     vpi_printf("reusing %s entire net driver of %s current value %s.\n",
-      s1, vpi_get_str(vpiFullName, wref), tmpval.value.str);
+                return(drvref);
+            }
+        }
+        else if (wtyp == vpiNet)
+        {
+            if (drvtyp != vpiNetDriver) continue;
 
-     return(drvref);
+            strcpy(s1, vpi_get_str(vpiType, drvref));
+            tmpval.format = vpiBinStrVal; 
+            vpi_get_value(drvref, &tmpval);
+            vpi_printf("reusing %s entire net driver of %s current value %s.\n",
+                       s1, vpi_get_str(vpiFullName, wref), tmpval.value.str);
+
+            return(drvref);
+        }
+        else
+        { 
+            vpi_printf("**ERR: illegal value %s passed to get_vpi_driver.\n",
+                       vpi_get_str(vpiType, wref));
+            return(NULL);
+        }
     }
-   else
-    { 
-     vpi_printf("**ERR: illegal value %s passed to get_vpi_driver.\n",
-      vpi_get_str(vpiType, wref));
-     return(NULL);
-    }
-  }
- strcpy(s1, vpi_get_str(vpiType, wref));
- vpi_printf("new driver added for %s %s.\n", s1,
-  vpi_get_str(vpiFullName, wref));
- return(NULL);
+    strcpy(s1, vpi_get_str(vpiType, wref));
+    vpi_printf("new driver added for %s %s.\n", s1,
+               vpi_get_str(vpiFullName, wref));
+    return(NULL);
 }
+#endif
 
 /*
  *
@@ -419,7 +435,7 @@ PLI_INT32 pli_cosim(void)
     action = tmpval.value.integer;
 
     if (action >= 4 && action < 10) {
-        if (cpu_trace) vpi_printf("pli_cosim() finish rw; %x\n", data);
+        //if (cpu_trace) vpi_printf("pli_cosim() finish rw; %x\n", data);
         rw_value = data;
         finish_rw();
     }
@@ -502,6 +518,13 @@ PLI_INT32 pli_cosim(void)
         vpi_put_value(fc_aref, &outval, NULL, vpiNoDelay);
     }
 
+    vpi_free_object(iter);
+    vpi_free_object(mhref);
+//    vpi_free_object(addrref);
+//    vpi_free_object(dataref);
+//    vpi_free_object(fcref);
+//    vpi_free_object(actionref);
+
     return(0);
 }
 #endif
@@ -550,8 +573,8 @@ void register_my_systfs(void)
 
 static void (*cosim_vlog_startup_routines[]) () =
 {
- register_my_systfs, 
- 0
+    register_my_systfs, 
+    0
 };
 
 /* dummy +loadvpi= boostrap routine - mimics old style exec all routines */

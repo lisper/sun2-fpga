@@ -1,3 +1,4 @@
+`define DEBUG_IO 1
 // Sun2 "guts" in verilog
 //
 // Pretty much a straight transcription of the schematics into verilog,
@@ -108,7 +109,7 @@
    initial
      begin
 	POR_n = 1'b0;
-	#25 POR_n = 1'b1;
+	#200 POR_n = 1'b1;
      end
 
    // DTACK generator
@@ -593,19 +594,26 @@ wire XEN_n = 1'b1;
 		      .id(4'h6)
 		      );
 
-//   tri1 TYPE1;
-//   tri1 TYPE0;
-//   tri1 MA14, MA13, MA12, MA11;
-
    wire [22:0] map_addr;
    assign map_addr = { MA22,MA21,MA20,MA19,MA18,MA17,MA16,
 		       MA15,MA14,MA13,MA12,MA11,11'b0 };
 
    wire [22:0] ia_addr;
    assign ia_addr = { IA22,IA21,IA20,IA19,IA18,IA17,IA16, 16'b0 };
+
+   wire [31:0] pm_data;
+   assign pm_data = { VALID, PROT5, PROT4, PROT3, 
+		      PROT2, PROT1, PROT0, TYPE2,
+		      TYPE1, TYPE0, ACC, MOD,
+		      4'b0,
+		      4'b0,
+		      MA22, MA21, MA20, MA19,
+		      MA18, MA17, MA16, MA15,
+		      MA14, MA13, MA12, MA11 };
    
-   //always @(posedge C_S5) $display("ia_addr %x", ia_addr);
-   //always @(posedge C_S5) $display("map_addr %x", map_addr);
+`ifdef DEBUG_S6
+   always @(posedge C_S6) $display("s6: pm_addr %x pm_data %x", pm_addr, pm_data);
+`endif
    
    ttl_2168_sram u307(
 		      .A0(P_A11),
@@ -734,6 +742,8 @@ wire XEN_n = 1'b1;
 //assign WR_PMAP0X_n = ~C_S6_n & ~WR_PMAP0L_n;
 //assign WR_PMAP0X_n = /*C_S6_n &*/ WR_PMAP0L_n;
 //assign WR_PMAP0X_n = ~(~C_S6_n | WR_PMAP0L_n);
+
+//   assign WR_PMAP0X_n = ~(~C_S6_n & ~WR_PMAP0L_n);
    assign WR_PMAP0X_n = WR_PMAP0L_n;
 		   
    // Protection decoder
@@ -768,10 +778,14 @@ wire XEN_n = 1'b1;
 		   .B(P_FC1),
 		   .C(P_FC2),
 // bug?
-//		   .Y(PROTERR_n),
-//		   .W(),
+//`define not_a_bug 1
+`ifdef not_a_bug
+		   .Y(PROTERR_n),
+		   .W(),
+`else
 		   .Y(),
 		   .W(PROTERR_n),
+`endif
 		   .S(C_S4_n));
 
    wire Z0, Z1, Z2, Z3, Z4, Z5, Z6, Z7;
@@ -783,7 +797,7 @@ wire XEN_n = 1'b1;
    assign Z5 = 1'b0;
    assign Z6 = 1'b0;
    assign Z7 = 1'b0;
-   
+
    ttl_am2949 u317(.A0(Z0),
 		   .A1(Z1),
 		   .A2(Z2),
@@ -906,18 +920,23 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7(WR_CXU_n));
 
-   always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert; addr %x data %x", p_addr, p_databus);
-   always @(negedge WR_PMAP1L_n) $display("WR_PMAP1L_n assert; addr %x data %x", p_addr, p_databus);
+`ifdef DBEUG_PMAP_WR
+   always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert; addr %x data %x; sm_addr %x, pm_addr %x, map_addr %x, ia_addr %x",
+					  p_addr, p_databus, sm_addr, pm_addr, map_addr, ia_addr);
+   always @(negedge WR_PMAP0X_n ) $display("WR_PMAP0X_n assert; addr %x data %x; sm_addr %x, pm_addr %x, map_addr %x, ia_addr %x",
+					  p_addr, p_databus, sm_addr, pm_addr, map_addr, ia_addr);
+					   
+   always @(negedge WR_PMAP1L_n) $display("WR_PMAP1L_n assert; addr %x data %x; sm_addr %x, pm_addr %x, map_addr %x, ia_addr %x",
+					  p_addr, p_databus, sm_addr, pm_addr, map_addr, ia_addr);
+`endif
 
+`ifdef DEBUG_PMAP_RD
    always @(negedge RD_PMAP0L_n) $display("RD_PMAP0L_n assert; addr %x data %x", p_addr, p_databus);
    always @(negedge RD_PMAP1L_n) $display("RD_PMAP1L_n assert; addr %x data %x", p_addr, p_databus);
+`endif
    
-`ifdef xx
+`ifdef DEBUG_SMAP_WR
    always @(negedge WR_SMAP_n) $display("WR_SMAP_n assert");
-   always @(negedge WR_PMAP0L_n) $display("WR_PMAP0L_n assert");
-   always @(negedge WR_PMAP1L_n) $display("WR_PMAP1L_n assert");
-   always @(negedge WR_PMAP0U_n) $display("WR_PMAP0U_n assert");
-   always @(negedge WR_PMAP1U_n) $display("WR_PMAP1U_n assert");
    always @(negedge WR_CXL_n) $display("WR_CXL_n assert");
    always @(negedge WR_CXU_n) $display("WR_CXU_n assert");
 `endif
@@ -938,15 +957,17 @@ wire XEN_n = 1'b1;
 		   .Q7(WR_ENABLE_n));
 
    always @(negedge RD_ENABLE_n) $display("RD_ENABLE_n asserts");
-   always @(negedge WR_ENABLE_n) $display("WR_ENABLE_n asserts");
+   always @(negedge WR_ENABLE_n) $display("WR_ENABLE_n asserts; data %x", p_databus);
    always @(negedge BOOT_n) $display("BOOT_n asserts");
    always @(posedge BOOT_n) $display("BOOT_n deasserts");
 
    // -------------------
 
+`ifdef DEBUG_RAM_IO
    always @(negedge RD_RAM_n) $display("RD_RAM_n assert; addr %x data %x", p_addr, p_databus);
    always @(negedge WR_RAM_n) $display("WR_RAM_n assert; addr %x data %x", p_addr, p_databus);
-
+`endif
+ 
    // Strobe Decoders
    ttl_74F138 U400(.A0(LTYPE0),
 		   .A1(LTYPE1),
@@ -963,6 +984,13 @@ wire XEN_n = 1'b1;
 		   .Q6(MWTC_n),
 		   .Q7(IOWC_n));
 
+`ifdef DEBUG_S6
+   always @(posedge C_S6)
+     if (ERR == 0 && DS_n == 0)
+       $display("s6: type %b%b ltype %b%b rw %b",
+		TYPE1, TYPE0, LTYPE1, LTYPE0, RW);
+`endif
+		
    ttl_74F138 u401(.A0(MA11),
 		   .A1(MA12),
 		   .A2(MA13),
@@ -978,13 +1006,13 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7());
 
-   always @(negedge RD_DCP_n) $display("RD_DCP_n asserts");
-   always @(negedge RD_PORT_n) $display("RD_PORT_n asserts");
-   always @(negedge RD_SCC_n) $display("RD_SCC_n asserts");
-   always @(negedge RD_TIMER_n) $display("RD_TIMER_n asserts");
-//   always @(negedge RD_PROM_n) $display("RD_PROM_n asserts");
-//   always @(negedge RD_IO_n) $display("RD_IO_n asserts");
-   
+`ifdef DEBUG_IO
+   always @(negedge RD_DCP_n) $display("RD_DCP_n asserts; %t", $time);
+   always @(negedge RD_PORT_n) $display("RD_PORT_n asserts; %t", $time);
+   always @(negedge RD_SCC_n) $display("RD_SCC_n asserts; %t", $time);
+   always @(negedge RD_TIMER_n) $display("RD_TIMER_n asserts; addr %x data %x; pm_addr %x, map_addr %x",
+					 p_addr, p_databus, pm_addr, map_addr);
+`endif   
 
    ttl_74F138 u402(.A0(MA11),
 		   .A1(MA12),
@@ -1001,9 +1029,11 @@ wire XEN_n = 1'b1;
 		   .Q6(),
 		   .Q7());
 
+`ifdef DEBUG_IO
    always @(negedge WR_DCP_n) $display("WR_DCP_n asserts");
    always @(negedge WR_SCC_n) $display("WR_SCC_n asserts");
-   always @(negedge WR_TIMER_n) $display("WR_TIMER_n asserts");
+   always @(negedge WR_TIMER_n) $display("WR_TIMER_n asserts; addr %x data %x", p_addr, p_databus);
+`endif
    
    // ID PRom
    ttl_74S288_idprom u411(.A0(P_A11),
@@ -1406,44 +1436,55 @@ wire XEN_n = 1'b1;
 		 .CK_n(1'b0),
 		 .CLK(C400));
 `endif
-		   
-ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5,IOD4,IOD3,IOD2,IOD1,IOD0}),
-		.CD_n(LA1_5[1]),
-		.CS_n(1'b0),
-		.RD_n(RD_TIMER_n),
-		.WR_n(WR_TIMER_n),
-		.X1(),
-		.X2(C200),
-		.FOUT(1'b0),
-		.SRC1(1'b0),
-		.SRC2(1'b0),
-		.SRC3(1'b0),
-		.SRC4(1'b0),
-		.SRC5(1'b0),
-		.SRC6(1'b0),
-		.GAT1(1'b0),
-		.GAT2(1'b0),
-		.GAT3(1'b0),
-		.GAT4(1'b0),
-		.GAT5(1'b0),
-		.OUT1(int7),
-		.OUT2(int6a),
-		.OUT3(int6b),
-		.OUT4(int6c),
-		.OUT5(int5));
 
-   always @(posedge RD_TIMER_n)
-     if (LA1_5[1])
-       $display("timer read c %x", iodata);
-     else
-       $display("timer read d %x", iodata);
+   wire fout;
 
-   always @(posedge WR_TIMER_n)
-     if (LA1_5[1])
-       $display("timer write c %x", iodata);
-     else
-       $display("timer write d %x", iodata);
+`ifdef DEBUG_IO
+   always @(posedge C100)
+     if (~RD_TIMER_n)
+       $display("timer read -> %x", iodata);
+`endif
    
+   ttl_am9513 u804(
+		   .D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5,IOD4,IOD3,IOD2,IOD1,IOD0}),
+		   .CD_n(LA1_5[1]),
+		   .CS_n(1'b0),
+		   .RD_n(RD_TIMER_n),
+		   .WR_n(WR_TIMER_n),
+		   .X1(),
+//		   .X2(C200),
+.X2(C100_n),
+		   .FOUT(fout),
+		   .SRC1(1'b0),
+		   .SRC2(1'b0),
+		   .SRC3(1'b0),
+		   .SRC4(1'b0),
+		   .SRC5(1'b0),
+		   .SRC6(1'b0),
+		   .GAT1(fout),
+		   .GAT2(1'b0),
+		   .GAT3(1'b0),
+		   .GAT4(1'b0),
+		   .GAT5(1'b0),
+		   .OUT1(int7),
+		   .OUT2(int6a),
+		   .OUT3(int6b),
+		   .OUT4(int6c),
+		   .OUT5(int5));
+
+`ifdef DEBUG_IO
+   always @(negedge RD_TIMER_n)
+     if (LA1_5[1])
+       #1 $display("timer read c %x; %t", iodata, $time);
+     else
+       #1 $display("timer read d %x; %t", iodata, $time);
+
+   always @(negedge WR_TIMER_n)
+     if (LA1_5[1])
+       #1 $display("timer write c %x; %t", iodata, $time);
+     else
+       #1 $display("timer write d %x; %t", iodata, $time);
+`endif   
    
    assign INT7_n = ~int7;
    assign INT6_n = ~(int6a | int6b | int6c);
@@ -1461,7 +1502,8 @@ ttl_am9513 u804(.D({IOD15,IOD14,IOD13,IOD12,IOD11,IOD10,IOD9,IOD8,IOD7,IOD6,IOD5
 		  .CE_n(1'b0),
 		  .RD_n(RD_SCC_n),
 		  .WR_n(WR_SCC_n),
-		  .PCLK(C200),
+//		  .PCLK(C200),
+.PCLK(C100_n),
 		  .TXCA_n(TXCA_n),
 		  .RXCA_n(RXCA_n),
 		  .TXDA(TXDA),

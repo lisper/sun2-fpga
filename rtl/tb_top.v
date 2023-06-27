@@ -177,6 +177,32 @@ module tb();
 //	 dut.m68010.m68k_rw_ram(24'h001020, 5, 0, 0, 16'h5aa5); // write
       end
    endtask
+
+   task test_am9513;
+      begin
+	 dut.m68010.m68k_rw_ram(24'h00000, 3, 0, 0, 16'hec00); // write page map
+
+	 // timer
+	 dut.m68010.m68k_rw_ram(24'h02800, 3, 0, 0, 16'h8050); // write page map
+	 dut.m68010.m68k_rw_ram(24'h02802, 3, 0, 0, 16'h0005); // write page map
+
+	 // timer
+	 $display("r/w TIMER");
+	 dut.m68010.m68k_rw_ram(24'h002802, 5, 0, 0, 16'hffef); // write
+
+	 dut.m68010.m68k_rw_ram(24'h002802, 5, 0, 0, 16'hff01); // write
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 0, 16'h0000); // read
+
+	 dut.m68010.m68k_rw_ram(24'h002802, 5, 0, 0, 16'hff01); // write
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 0, 16'h0000); // read
+
+	 dut.m68010.m68k_rw_ram(24'h002802, 5, 0, 0, 16'hff02); // write
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 0, 16'h0000); // read
+
+	 dut.m68010.m68k_rw_ram(24'h002802, 5, 0, 0, 16'hff03); // write
+	 dut.m68010.m68k_rw_ram(24'h002800, 5, 1, 0, 16'h0000); // read
+      end
+   endtask
 	
    task run_tests;
       begin
@@ -184,12 +210,17 @@ module tb();
 //	 test_eeprom;
 //	 test_mmu_regs;
 //	 test_io_regs;
-	 test_p2_mem;
+//	 test_p2_mem;
+	 test_am9513;
       end
    endtask
 
+   // 40 Mhz
    always
      begin
+// this broke something
+//	#12.5 clk40 = 0;
+//	#12.5 clk40 = 1;
 	#10 clk40 = 0;
 	#10 clk40 = 1;
      end
@@ -198,7 +229,7 @@ module tb();
      begin
 `ifndef cosim
 	#200 run_tests;
-	#5000 $finish;
+	#1000 $finish;
 `endif
      end
 
@@ -208,7 +239,7 @@ module tb();
        $dumpfile("sun2.vcd");
        $dumpvars(0, dut);
 `ifdef cosim
-       #10 $dumpoff;
+       #1000 $dumpoff;
 `endif
     end
 

@@ -1,11 +1,21 @@
 
-all: bootprom_h.v bootprom_l.v
+all: bootprom_h.v bootprom_l.v bootprom_patched_l.v bootprom_patched_h.v
+
+clean:
+	rm -f bootprom_h.v bootprom_l.v bootprom_patched_l.v bootprom_patched_h.v
+	rm -f *.vcd *.log
 
 bootprom_l.v: rom
 	./rom 0 <../media/sun2-multi-rev-R.bin >bootprom_l.v
 
 bootprom_h.v: rom
 	./rom 1 <../media/sun2-multi-rev-R.bin >bootprom_h.v
+
+bootprom_patched_l.v: rom ../boot/sun2-multi-rev-R-patched.bin
+	./rom 0 <../boot/sun2-multi-rev-R-patched.bin >bootprom_patched_l.v
+
+bootprom_patched_h.v: rom ../boot/sun2-multi-rev-R-patched.bin
+	./rom 1 <../boot/sun2-multi-rev-R-patched.bin >bootprom_patched_h.v
 
 rom: rom.c
 	cc -o rom rom.c
@@ -55,5 +65,3 @@ CHIPS = \
 	ttl_am9513.v \
 	ttl_Z8530.v
 
-all:
-	cver tb_ttl.v

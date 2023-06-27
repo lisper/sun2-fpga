@@ -271,7 +271,7 @@ module m68010_cosim(
      end
 
 `ifdef cosim
-   reg [22:0] cosim_addr;
+   reg [23:0] cosim_addr;
    reg [31:0] cosim_data;
    reg [2:0] cosim_fc;
    reg [2:0] cosim_action;
@@ -279,46 +279,46 @@ module m68010_cosim(
    always @(posedge C100)
      begin
         $pli_cosim(cosim_addr, cosim_data, cosim_fc, cosim_action);
-	if (cosim_action != 0 && tb.cpu_trace)
-	  $display("cosim: action=%d %x %x %d", cosim_action, cosim_addr, cosim_data, cosim_fc);
+	//if (cosim_action != 0 && tb.cpu_trace)
+	//$display("cosim: action=%d addr=%x data=%x fc=%d", cosim_action, cosim_addr, cosim_data, cosim_fc);
 
 	case (cosim_action)
 	  1: // byte read
 	  begin
 	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 1, 0);
-	     //$display("cosim: response %x; %t", read_data, $time);
+	     if (tb.cpu_trace) $display("cosim: read-byte %x -> %x; %t", cosim_addr, read_data, $time);
 	     $pli_cosim(0, read_data, 0, 7);
 	  end
 	  2: // word read
 	  begin
 	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
-	     if (tb.cpu_trace) $display("cosim: response %x; %t", read_data, $time);
+	     if (tb.cpu_trace) $display("cosim: read-word; %x -> %x; %t", cosim_addr, read_data, $time);
 	     $pli_cosim(0, read_data, 0, 7);
 	  end
 	  3: // longword read
 	  begin
 	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
-	     if (tb.cpu_trace) $display("cosim: response1 %x", read_data);
+	     //if (tb.cpu_trace) $display("cosim: response1 %x", read_data);
 	     read_data32 = { read_data[15:0], 16'b0 };
-	     cosim_addr = cosim_addr + 23'h2;
+	     cosim_addr = cosim_addr + 24'h2;
 	     m68k_rw_ram(cosim_addr, cosim_fc, 1, 0, 0);
 	     read_data32 = { read_data32[31:16], read_data[15:0] };
-	     if (tb.cpu_trace) $display("cosim: response2 %x %x", read_data, read_data32);
+	     if (tb.cpu_trace) $display("cosim: read-long; %x -> %x", cosim_addr, read_data32);
 	     $pli_cosim(0, read_data32, 0, 7);
 	  end
 	  4: // byte write
 	    begin
-	       //$display("cosim: write-byte %x <- %x", cosim_addr, cosim_data);
+	       if (tb.cpu_trace) $display("cosim: write-byte %x <- %x", cosim_addr, cosim_data);
 	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 1, cosim_data);
 	    end
 	  5: // word write
 	    begin
-	       //$display("cosim: write-word %x <- %x", cosim_addr, cosim_data);
+	       if (tb.cpu_trace) $display("cosim: write-word %x <- %x", cosim_addr, cosim_data);
 	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data);
 	    end
 	  6: // longword write
 	    begin
-	       //if (tb.cpu_trace) $display("cosim: write-long %x <- %x", cosim_addr, cosim_data);
+	       if (tb.cpu_trace) $display("cosim: write-long %x <- %x", cosim_addr, cosim_data);
 	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data >> 16);
 	       cosim_addr = cosim_addr + 23'h2;
 	       m68k_rw_ram(cosim_addr, cosim_fc, 0, 2, cosim_data);	     

@@ -1,0 +1,44 @@
+#ef0b5a	6600 fffc
+#ef0b84	6600 fffc
+#ef0bb6	56cf ffe8
+#ef0bee	66f0
+#ef0bf0	51cd ffe2
+#ef0c1e	60e8
+#ef0c20	200d
+#ef0c22	66de
+#ef0c24	51cd ffd0
+#ef0c2c	6706     
+#ef0c2e	3e3c 0055
+#ef0c32	609e     
+#ef0c52	56cf fff0
+
+# mapping diags
+ef0b60 0 0 ef0df2
+
+#ef0c8e	66ee
+#ef0c90	51cd ffde
+#ef0cba	51cd ffda
+#ef0cc4	6000 fe8a
+#ef0d16	51cd fff4
+#ef0d32	51cd ffee
+#ef0d82	51cd ffe2
+#ef0da8	51cd fff4
+#ef0dc4	51cd ffee
+
+# memory test
+#ef0e92	51cd fffc
+#ef0e9a	64f4     
+#ef0ea4	6efc     
+#ef0ec4	66c2     
+#ef0f3e	51cd fffc
+#ef0f46	64f4     
+#ef0f50	6efc     
+#ef0f5e	56cd fffc
+#ef0f68	64f2     
+
+ef0e80 0 0 ef0f68
+
+ef01f0 51c9 fffc
+#ef01f4 4241     
+ef01f6 5381     
+ef01f8 64f4     

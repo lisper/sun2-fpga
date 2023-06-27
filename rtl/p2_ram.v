@@ -14,16 +14,32 @@ module p2_ram(input clk,
    assign en = ~go_n;
    
    // for sim only
-   reg [15:0] ram[0:524287];
+   reg [7:0] ramh[0:262143];
+   reg [7:0] raml[0:262143];
    reg [15:0] do = 0;
 
+   wire [21:0] b_addr;
+   assign b_addr = addr[22:1];
+   
    always @(posedge clk)
      begin
 	if (en && wr_en)
 	  begin
 	     if (addr <= 524287)
-	       ram[addr] <= datai;
-	     $display("p2_ram: %x <- %x", addr, datai);
+	       begin
+		  if (~wel_n)
+		    raml[b_addr] <= datai[7:0];
+		  if (~weu_n)
+		    ramh[b_addr] <= datai[15:8];
+	       end
+	     if (~wel_n && ~weu_n)
+	       $display("p2_ram: %x <- %x", addr, datai);
+	     else
+	       if (~wel_n)
+		 $display("p2_ram: %x <- %x (b)", addr, datai[7:0]);
+	       else
+		 if (~weu_n)
+		   $display("p2_ram: %x <- %x (b)", addr, datai[15:8]);
 	  end
      end
 
@@ -32,11 +48,16 @@ module p2_ram(input clk,
 	if (en && ~wr_en)
 	  begin
 	     if (addr <= 524287)
-	       do <= ram[addr];
+	       begin
+		  do <= { ramh[b_addr], raml[b_addr] };
+		  $display("p2_ram: %x -> %x", addr, { ramh[b_addr], raml[b_addr] });
+	       end
 	     else
-	       do <= 16'hffff;
-	     
-	     $display("p2_ram: %x -> %x", addr, ram[addr]);
+	       if (addr < 4096*1024)
+		 begin
+		    do <= 16'hffff;
+		    $display("p2_ram: %x -> %x", addr, 16'hffff);
+		 end
 	  end
      end
 

@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
-[*] Thu Jun 15 12:23:55 2023
+[*] Mon Jun 26 11:13:08 2023
 [*]
 [dumpfile] "/files/code/git/sun2-fpga/rtl/sun2.vcd"
-[dumpfile_mtime] "Thu Jun 15 12:20:51 2023"
-[dumpfile_size] 65526
+[dumpfile_mtime] "Mon Jun 26 11:12:58 2023"
+[dumpfile_size] 77327092
 [savefile] "/files/code/git/sun2-fpga/rtl/signals.gtkw"
-[timestart] 341305053
-[size] 1652 894
-[pos] 30 -78
-*-7.951885 341305399 37790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 24156
+[size] 1652 882
+[pos] 138 102
+*-8.451545 25020 37790 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.dut.
 [treeopen] tb.dut.m68010.
@@ -19,7 +19,7 @@
 [sst_width] 233
 [signals_width] 325
 [sst_expanded] 1
-[sst_vpaned_height] 517
+[sst_vpaned_height] 509
 @28
 tb.dut.sun2.C100
 tb.dut.sun2.BOOTEN_n
@@ -36,6 +36,8 @@ tb.dut.sun2.LTYPE1
 tb.dut.sun2.EN_S4
 tb.dut.sun2.P_LDS_n
 tb.dut.sun2.P_UDS_n
+@22
+tb.dut.m68010.state[3:0]
 @200
 -
 @28
@@ -48,10 +50,14 @@ tb.dut.sun2.DCPACK_n
 tb.dut.sun2.LTYPE0
 tb.dut.sun2.LTYPE1
 tb.dut.sun2.C_S4
+tb.dut.sun2.RW
+tb.dut.sun2.ERR
+tb.dut.sun2.u111.sel[2:0]
 @200
 -
 @22
 tb.dut.sun2.p_addr[23:0]
+tb.dut.sun2.p_databus[15:0]
 tb.dut.sun2.sm_addr[11:0]
 tb.dut.sun2.pm_addr[11:0]
 @28
@@ -110,9 +116,6 @@ tb.dut.sun2.P_VPA_n
 @22
 tb.dut.sun2.iodata[15:0]
 tb.dut.sun2.p_addr[23:0]
-tb.dut.sun2.p_databus_in[15:0]
-@23
-tb.dut.m68010.state[3:0]
 @28
 tb.dut.sun2.C_S3
 tb.dut.sun2.C_S4
@@ -124,10 +127,6 @@ tb.dut.sun2.C_S7
 @28
 tb.dut.sun2.WR_CXU_n
 tb.dut.sun2.WR_CXL_n
-@22
-tb.dut.sun2.u300.r[3:0]
-@28
-tb.dut.sun2.u300.CK
 tb.dut.sun2.WR_SMAP_n
 tb.dut.sun2.RD_SMAP_n
 @200
@@ -152,7 +151,6 @@ tb.dut.sun2.WR_IO_n
 @200
 -
 @28
-tb.dut.sun2.RD_ID_n
 tb.dut.sun2.RD_ERROR_n
 tb.dut.sun2.RD_ENABLE_n
 tb.dut.sun2.WR_ENABLE_n
@@ -184,9 +182,33 @@ tb.dut.sun2.p2_do[15:0]
 @28
 tb.dut.sun2.C100
 tb.dut.sun2.C100_n
-tb.dut.sun2.C_S3_n
+tb.dut.sun2.rom_oe_n
+tb.dut.sun2.RD_PROM_n
+tb.dut.sun2.BOOTEN_n
+tb.dut.sun2.BOOT_n
+tb.dut.sun2.INIT_n
+tb.dut.sun2.POR_n
+@200
+-
+@28
+tb.dut.sun2.u804.read
+tb.dut.sun2.u804.write
+@22
+tb.dut.sun2.u804.data_out[15:0]
+tb.dut.sun2.u804.bus_out[15:0]
+tb.dut.sun2.u804.D[15:0]
+@28
+tb.dut.sun2.IOD15
+tb.dut.sun2.IOD8
+tb.dut.sun2.IOD7
+tb.dut.sun2.rom_oe_n
+tb.dut.sun2.d_u102
+@29
+tb.dut.sun2.Q_AS_n
+@200
+-
+@28
 tb.dut.sun2.DS_n
-tb.dut.sun2.go_n
 tb.dut.sun2.P2_RAS_n
 tb.dut.sun2.P2_CAS_n
 tb.dut.sun2.P2_REFR_n
@@ -257,6 +279,7 @@ tb.dut.sun2.u415.MA12
 tb.dut.sun2.u415.MA11
 tb.dut.sun2.u415.CLK100
 tb.dut.sun2.u415.CS5
+tb.dut.sun2.u310.data[3:0]
 @200
 -
 -
